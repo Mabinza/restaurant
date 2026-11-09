@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kaboul Paris Nord — Restaurant afghan · Halal</title>
+<meta name="description" content="Kaboul Paris Nord : cuisine afghane, saveurs parisiennes. Découvrez la carte et choisissez votre table en 3D.">
+<meta name="theme-color" content="#1d070b">
+<link rel="icon" href="assets/img/logo-tour.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script type="importmap">
+{ "imports": { "three": "./vendor/three/three.module.min.js", "three/addons/": "./vendor/three/" } }
+</script>
+</head>
+<body>
+
+<header class="barre" id="barre">
+  <a class="marque" href="#accueil" aria-label="Kaboul Paris Nord — accueil">
+    <img src="assets/img/logo-tour.png" alt="" width="20" height="33">
+    <span>Kaboul <em>Paris Nord</em></span>
+  </a>
+  <nav aria-label="Navigation principale">
+    <a href="#carte">La carte</a>
+    <a href="#reserver">Réserver</a>
+    <a href="#infos">Infos</a>
+  </nav>
+  <a class="btn btn-or petit" href="#reserver">Choisir ma table</a>
+</header>
+
+<main>
+  <!-- ───────── ACCUEIL ───────── -->
+  <section class="accueil" id="accueil">
+    <div class="accueil-texte">
+      <img class="logo" src="assets/img/logo.png" alt="Kaboul Paris Nord Restaurant" width="284" height="385">
+      <p class="farsi" lang="fa" dir="rtl">کابل پاریس رستورانت</p>
+      <h1>Cuisine afghane <span>•</span> saveurs parisiennes</h1>
+      <div class="actions">
+        <a class="btn btn-or" href="#reserver">Choisir ma table en 3D</a>
+        <a class="btn btn-ligne" href="#carte">Voir la carte</a>
+      </div>
+    </div>
+    <div class="accueil-plat" aria-hidden="true">
+      <div class="halo"></div>
+      <img src="assets/img/plats/karahi-tikka.webp" alt="" width="760" height="645">
+      <span class="halal"><b lang="ar">حلال</b><i>Halal</i></span>
+    </div>
+    <a class="defiler" href="#carte" aria-label="Descendre vers la carte"><span></span></a>
+  </section>
+
+  <!-- ───────── CARTE ───────── -->
+  <section class="carte" id="carte">
+    <div class="entete">
+      <p class="sur">Fait maison · 100 % halal</p>
+      <h2>La carte</h2>
+      <div class="filet"></div>
+    </div>
+    <div class="onglets" id="onglets" role="tablist" aria-label="Catégories de la carte"></div>
+    <div id="plats" class="plats" role="tabpanel"></div>
+  </section>
+
+  <!-- ───────── RÉSERVATION 3D ───────── -->
+  <section class="reserver" id="reserver">
+    <div class="entete">
+      <p class="sur">Réservation</p>
+      <h2>Choisissez votre table</h2>
+      <div class="filet"></div>
+      <p class="intro">Indiquez la date, l’heure et le nombre de convives, puis touchez la table qui vous plaît dans la salle.</p>
+    </div>
+
+    <div class="resa">
+      <form class="criteres" id="criteres" onsubmit="return false">
+        <label>Date<input type="date" id="date" required></label>
+        <label>Heure<select id="heure"></select></label>
+        <div class="champ">Convives
+          <div class="compteur">
+            <button type="button" id="moins" aria-label="Un convive de moins">−</button>
+            <output id="nb" aria-live="polite">2</output>
+            <button type="button" id="plus" aria-label="Un convive de plus">+</button>
+          </div>
+        </div>
+      </form>
+
+      <div class="scene-cadre">
+        <div id="scene" class="scene" aria-label="Plan 3D de la salle"></div>
+        <p class="astuce">Glissez pour tourner · pincez pour zoomer · touchez une table</p>
+        <span class="demo" id="demo" hidden>Démo · plan et disponibilités d’exemple</span>
+        <ul class="legende">
+          <li><i class="pt libre"></i>Libre</li>
+          <li><i class="pt choisie"></i>Votre choix</li>
+          <li><i class="pt prise"></i>Réservée</li>
+        </ul>
+      </div>
+
+      <div class="puces" id="puces" aria-label="Liste des tables"></div>
+
+      <form class="finaliser" id="finaliser" hidden>
+        <div class="ticket">
+          <p class="sur">Votre sélection</p>
+          <p class="choix" id="recap"></p>
+        </div>
+        <label>Nom<input type="text" id="nom" autocomplete="name" required placeholder="Votre nom"></label>
+        <label>Téléphone<input type="tel" id="tel" autocomplete="tel" required placeholder="06 12 34 56 78"></label>
+        <label class="large">Un mot pour nous<input type="text" id="mot" placeholder="Facultatif : anniversaire, chaise bébé…"></label>
+        <button class="btn btn-or large" type="submit">Confirmer la réservation</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ───────── INFOS ───────── -->
+  <section class="infos" id="infos">
+    <div class="entete">
+      <p class="sur">Nous trouver</p>
+      <h2>Infos pratiques</h2>
+      <div class="filet"></div>
+    </div>
+    <div class="cartes-infos" id="cartes-infos"></div>
+  </section>
+</main>
+
+<footer>
+  <img src="assets/img/logo-tour.png" alt="" width="28" height="46">
+  <p>Kaboul Paris Nord · Cuisine afghane · Halal</p>
+</footer>
+
+<dialog id="fiche" class="fiche"></dialog>
+<dialog id="confirmation" class="fiche confirmation"></dialog>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

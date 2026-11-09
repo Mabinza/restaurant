@@ -1,0 +1,138 @@
+// ─────────────────────────────────────────────────────────────
+//  Kaboul Paris Nord — données du site
+//  Tout ce qui change souvent (infos, menu, tables) est ici.
+// ─────────────────────────────────────────────────────────────
+
+export const CONFIG = {
+  nom: 'Kaboul Paris Nord',
+  // Numéro WhatsApp du restaurant au format international sans « + » (ex. '33612345678').
+  // Tant qu'il est vide, la réservation affiche seulement un récapitulatif.
+  whatsapp: '',
+  telephone: '',
+  adresse: '',
+  horaires: '',
+  // Créneaux proposés à la réservation (à adapter aux vrais horaires).
+  creneaux: ['12:00', '12:30', '13:00', '13:30', '14:00', '14:30',
+             '19:00', '19:30', '20:00', '20:30', '21:00', '21:30', '22:00'],
+  // true = des tables apparaissent « réservées » de façon simulée, pour la démo.
+  // À passer à false dès que les vraies réservations sont branchées.
+  demoOccupation: true,
+};
+
+const P = 'assets/img/plats/';
+
+export const MENU = [
+  {
+    id: 'specialites', nom: 'Spécialités', titre: 'Les plats',
+    items: [
+      { nom: 'Assiette mixte', prix: 14, img: P + 'assiette-mixte.jpg', badge: 'Notre spécialité' },
+      { nom: 'Kabuli palaw', prix: 10, img: P + 'kabuli-palaw.jpg' },
+      { nom: 'Mantou', prix: 10, img: P + 'mantou.webp' },
+      { nom: 'Biryani', prix: 8, img: P + 'biryani.jpg' },
+      { nom: 'Assiette poulet kebab', prix: 9, img: P + 'assiette-poulet-kebab.jpg' },
+      { nom: 'Chapli kebab + 2 naans nature & boisson 33cl', prix: 10, img: P + 'chapli-kebab.jpg' },
+      { nom: 'Poisson avec riz', prix: 9, img: P + 'poisson.webp' },
+    ],
+  },
+  {
+    id: 'entrees', nom: 'Entrées', titre: 'Les entrées',
+    items: [
+      { nom: 'Naan fromage + 4 pièces poulet tikka', prix: 6, img: P + 'naan-tikka.webp' },
+      { nom: 'Seekh kebab (2 pièces)', prix: 4, img: P + 'seekh-kebab.jpg' },
+      { nom: 'Samossa (2 pièces)', prix: 3, img: P + 'samossa.jpg' },
+      { nom: 'Schante samossa (2 pièces)', prix: 4, img: P + 'schante-samossa.jpg' },
+      { nom: 'Poulet tandoori', prix: 3, img: P + 'poulet-tandoori.webp' },
+      { nom: 'Poulet tikka (4 pièces)', prix: 4, img: P + 'poulet-tikka.jpg' },
+      { nom: 'Sandwich chapli kebab', prix: 5, img: P + 'sandwich-chapli.jpg' },
+    ],
+  },
+  {
+    id: 'mijotes', nom: 'Plats mijotés', titre: 'Les plats mijotés',
+    items: [
+      { nom: 'Paya pacha / pied de bœuf', prix: 8, img: P + 'paya.webp' },
+      { nom: 'Kurma + naan', prix: 8, img: P + 'kurma.jpg' },
+      { nom: 'Keema + naan', prix: 8, img: P + 'keema.jpg' },
+      { nom: 'Kofta + naan', prix: 8, img: P + 'kofta.jpg' },
+      { nom: 'Poulet korma + naan', prix: 8, img: P + 'poulet-korma.jpg' },
+      { nom: 'Veau kurma + naan', prix: 12, img: P + 'veau-kurma.jpg' },
+      { nom: 'Depiaza + naan', prix: 12, img: P + 'depiaza.jpg' },
+      { nom: 'Foie de bœuf + naan', prix: 8, img: P + 'foie.jpg' },
+      { nom: 'Épinards + naan', prix: 8, img: P + 'epinards.jpg' },
+      { nom: 'Bamia + naan', prix: 8, img: P + 'bamia.jpg' },
+      { nom: 'Chou-fleur + naan', prix: 8, img: P + 'chou-fleur.jpg' },
+      { nom: 'Haricots rouges + naan', prix: 8, img: P + 'haricots.jpg' },
+      { nom: 'Pois chiches + naan', prix: 8, img: P + 'pois-chiches.jpg' },
+      { nom: 'Lentilles + naan', prix: 8, img: P + 'lentilles.jpg' },
+      { nom: 'Riz avec sauce au choix', prix: 8, img: P + 'riz-sauce.jpg' },
+      { nom: 'Riz blanc', prix: 4, img: P + 'riz-blanc.webp' },
+    ],
+  },
+  {
+    id: 'karahi', nom: 'Karahi', titre: 'Karahi', note: 'Servis avec naan',
+    items: [
+      { nom: 'Karahi poulet + naan', prix: 25, img: P + 'karahi-poulet.jpg' },
+      { nom: 'Karahi agneau + naan', prix: 35, img: P + 'karahi-agneau.jpg' },
+      { nom: 'Karahi poulet tikka + naan', prix: 30, img: P + 'karahi-tikka.webp' },
+    ],
+  },
+  {
+    id: 'pizzas', nom: 'Pizzas', titre: 'Nos pizzas',
+    items: [
+      { nom: 'Pizza Margherita', prix: 8, img: P + 'margherita.webp', desc: 'Sauce tomate, mozzarella' },
+      { nom: 'Pizza Végétarienne', prix: 8, img: P + 'vegetarienne.webp', desc: 'Sauce tomate, mozzarella, tomates, champignons, olives, oignons' },
+      { nom: 'Pizza Bollywood', prix: 8, img: P + 'bollywood.webp', desc: 'Sauce tomate, fromage, œuf, poulet tikka, oignons, poivrons' },
+      { nom: 'Pizza 4 fromages', prix: 8, img: P + '4-fromages.webp', desc: 'Sauce tomate, mozzarella, parmesan, provolone, gorgonzola' },
+      { nom: 'Pizza Norvégienne', prix: 8, img: P + 'norvegienne.webp', desc: 'Crème fraîche, saumon, fromage' },
+    ],
+  },
+  {
+    id: 'wings', nom: 'Wings & frites', titre: 'Wings & frites',
+    items: [
+      { nom: '10 wings + frites & boisson 33cl', prix: 8.5, img: P + 'wings-10.webp' },
+      { nom: '15 wings', prix: 7, img: P + 'wings-15.webp' },
+      { nom: 'Barquette de frites', prix: 2.5, img: P + 'frites.jpg' },
+    ],
+  },
+  {
+    id: 'naans', nom: 'Naans & soupe', titre: 'Naans & soupe', liste: true, photo: P + 'naans-soupe.jpg',
+    items: [
+      { nom: 'Bolani', prix: 2 },
+      { nom: 'Afghani naan', prix: 1.5 },
+      { nom: 'Naan nature', prix: 1 },
+      { nom: 'Naan fromage', prix: 2.5 },
+      { nom: 'Afghani soupe', prix: 5 },
+    ],
+  },
+  {
+    id: 'boissons', nom: 'Boissons', titre: 'Les boissons', liste: true, photo: P + 'boissons.jpg',
+    items: [
+      { nom: 'Lassi mangue', prix: 3 },
+      { nom: 'Thé, café', prix: 1.5 },
+      { nom: 'Boissons 33cl', prix: 1.5, desc: 'Coca, Fanta…' },
+      { nom: 'Boissons 1,5L', prix: 3, desc: 'Coca, Fanta…' },
+      { nom: 'Bouteille d’eau 50cl', prix: 1 },
+      { nom: 'Bouteille d’eau 1,5L', prix: 2 },
+    ],
+  },
+];
+
+// ─────────────────────────────────────────────────────────────
+//  Plan de salle — PLAN D'EXEMPLE.
+//  À remplacer par le vrai plan (scan Polycam « Room »).
+//  x / z en mètres depuis le centre de la salle ; forme : 'ronde' | 'rect'.
+// ─────────────────────────────────────────────────────────────
+export const SALLE = { largeur: 13, profondeur: 10 };
+
+export const TABLES = [
+  { id: 1,  places: 4, forme: 'rect',  x: -5.0, z: -3.3 },
+  { id: 2,  places: 4, forme: 'rect',  x: -2.2, z: -3.3 },
+  { id: 3,  places: 4, forme: 'rect',  x:  0.6, z: -3.3 },
+  { id: 4,  places: 2, forme: 'ronde', x: -5.1, z: -0.2 },
+  { id: 5,  places: 6, forme: 'rect',  x: -2.0, z: -0.2 },
+  { id: 6,  places: 4, forme: 'rect',  x:  1.5, z: -0.2 },
+  { id: 7,  places: 2, forme: 'ronde', x:  4.6, z: -0.2 },
+  { id: 8,  places: 4, forme: 'rect',  x: -4.9, z:  3.0 },
+  { id: 9,  places: 2, forme: 'ronde', x: -2.0, z:  3.0 },
+  { id: 10, places: 2, forme: 'ronde', x:  0.5, z:  3.0 },
+  { id: 11, places: 6, forme: 'rect',  x:  3.9, z:  3.0 },
+];
