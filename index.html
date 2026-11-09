@@ -4,16 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Kaboul Paris Nord — Restaurant afghan · Halal</title>
-<meta name="description" content="Kaboul Paris Nord : cuisine afghane, saveurs parisiennes. Découvrez la carte et choisissez votre table en 3D.">
+<meta name="description" content="Kaboul Paris Nord : cuisine afghane, saveurs parisiennes. Découvrez la carte et laissez votre avis.">
 <meta name="theme-color" content="#1d070b">
 <link rel="icon" href="assets/img/logo-tour.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
-<script type="importmap">
-{ "imports": { "three": "./vendor/three/three.module.min.js", "three/addons/": "./vendor/three/" } }
-</script>
 </head>
 <body>
 
@@ -24,10 +21,10 @@
   </a>
   <nav aria-label="Navigation principale">
     <a href="#carte">La carte</a>
-    <a href="#reserver">Réserver</a>
+    <a href="#avis">Avis</a>
     <a href="#infos">Infos</a>
   </nav>
-  <a class="btn btn-or petit" href="#reserver">Choisir ma table</a>
+  <a class="btn btn-or petit" href="#carte">Voir la carte</a>
 </header>
 
 <main>
@@ -38,8 +35,8 @@
       <p class="farsi" lang="fa" dir="rtl">کابل پاریس رستورانت</p>
       <h1>Cuisine afghane <span>•</span> saveurs parisiennes</h1>
       <div class="actions">
-        <a class="btn btn-or" href="#reserver">Choisir ma table en 3D</a>
-        <a class="btn btn-ligne" href="#carte">Voir la carte</a>
+        <a class="btn btn-or" href="#carte">Voir la carte</a>
+        <a class="btn btn-ligne" href="#avis">Donner mon avis</a>
       </div>
     </div>
     <div class="accueil-plat" aria-hidden="true">
@@ -61,51 +58,34 @@
     <div id="plats" class="plats" role="tabpanel"></div>
   </section>
 
-  <!-- ───────── RÉSERVATION 3D ───────── -->
-  <section class="reserver" id="reserver">
+  <!-- ───────── AVIS ───────── -->
+  <section class="avis" id="avis">
     <div class="entete">
-      <p class="sur">Réservation</p>
-      <h2>Choisissez votre table</h2>
+      <p class="sur">Votre expérience</p>
+      <h2>Vos avis</h2>
       <div class="filet"></div>
-      <p class="intro">Indiquez la date, l’heure et le nombre de convives, puis touchez la table qui vous plaît dans la salle.</p>
+      <p class="intro">Vous êtes venu manger chez nous ? Dites-nous ce que vous en avez pensé.</p>
     </div>
-
-    <div class="resa">
-      <form class="criteres" id="criteres" onsubmit="return false">
-        <label>Date<input type="date" id="date" required></label>
-        <label>Heure<select id="heure"></select></label>
-        <div class="champ">Convives
-          <div class="compteur">
-            <button type="button" id="moins" aria-label="Un convive de moins">−</button>
-            <output id="nb" aria-live="polite">2</output>
-            <button type="button" id="plus" aria-label="Un convive de plus">+</button>
+    <div class="avis-grille">
+      <form class="avis-form" id="avis-form" novalidate>
+        <h3>Laisser un avis</h3>
+        <fieldset>
+          <legend>Votre note</legend>
+          <div class="etoiles">
+            <input type="radio" name="note" id="n5" value="5"><label for="n5" aria-label="5 étoiles">★</label>
+            <input type="radio" name="note" id="n4" value="4"><label for="n4" aria-label="4 étoiles">★</label>
+            <input type="radio" name="note" id="n3" value="3"><label for="n3" aria-label="3 étoiles">★</label>
+            <input type="radio" name="note" id="n2" value="2"><label for="n2" aria-label="2 étoiles">★</label>
+            <input type="radio" name="note" id="n1" value="1"><label for="n1" aria-label="1 étoile">★</label>
           </div>
-        </div>
+        </fieldset>
+        <label>Nom<input type="text" id="avis-nom" autocomplete="name" maxlength="40" placeholder="Votre nom ou prénom"></label>
+        <label>Commentaire<textarea id="avis-texte" rows="4" maxlength="600" placeholder="Les plats, l’accueil, l’ambiance…"></textarea></label>
+        <button class="btn btn-or" type="submit">Publier mon avis</button>
+        <p id="avis-retour" role="status"></p>
+        <p class="note-locale" id="avis-note" hidden>Pour l’instant, votre avis est enregistré sur cet appareil uniquement.</p>
       </form>
-
-      <div class="scene-cadre">
-        <div id="scene" class="scene" aria-label="Plan 3D de la salle"></div>
-        <p class="astuce">Glissez pour tourner · pincez pour zoomer · touchez une table</p>
-        <span class="demo" id="demo" hidden>Démo · plan et disponibilités d’exemple</span>
-        <ul class="legende">
-          <li><i class="pt libre"></i>Libre</li>
-          <li><i class="pt choisie"></i>Votre choix</li>
-          <li><i class="pt prise"></i>Réservée</li>
-        </ul>
-      </div>
-
-      <div class="puces" id="puces" aria-label="Liste des tables"></div>
-
-      <form class="finaliser" id="finaliser" hidden>
-        <div class="ticket">
-          <p class="sur">Votre sélection</p>
-          <p class="choix" id="recap"></p>
-        </div>
-        <label>Nom<input type="text" id="nom" autocomplete="name" required placeholder="Votre nom"></label>
-        <label>Téléphone<input type="tel" id="tel" autocomplete="tel" required placeholder="06 12 34 56 78"></label>
-        <label class="large">Un mot pour nous<input type="text" id="mot" placeholder="Facultatif : anniversaire, chaise bébé…"></label>
-        <button class="btn btn-or large" type="submit">Confirmer la réservation</button>
-      </form>
+      <div class="avis-liste" id="avis-liste" aria-live="polite"></div>
     </div>
   </section>
 
@@ -126,7 +106,6 @@
 </footer>
 
 <dialog id="fiche" class="fiche"></dialog>
-<dialog id="confirmation" class="fiche confirmation"></dialog>
 
 <script type="module" src="js/app.js"></script>
 </body>

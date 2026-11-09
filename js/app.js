@@ -1,4 +1,4 @@
-import { CONFIG, MENU, TABLES, SALLE } from './data.js';
+import { CONFIG, MENU } from './data.js';
 
 const $ = s => document.querySelector(s);
 const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
@@ -69,103 +69,45 @@ infos.forEach(([titre, val, lien, action]) => {
   $('#cartes-infos').append(el('div', 'info', `<h3>${titre}</h3><p>${val ? esc(val).replace(/\n/g, '<br>') : '<span class="avenir">Bientôt en ligne</span>'}</p>${lien ? `<a href="${lien}" class="lien">${action} →</a>` : ''}`));
 });
 
-// ───────── réservation ─────────
-const CLE = 'kpn-reservations';
+// ───────── avis ─────────
+// Sans serveur, les avis sont gardés dans le navigateur du visiteur (localStorage).
+const CLE = 'kpn-avis';
 const lire = () => { try { return JSON.parse(localStorage.getItem(CLE)) || []; } catch (e) { return []; } };
 const ecrire = l => { try { localStorage.setItem(CLE, JSON.stringify(l)); } catch (e) {} };
+const etoiles = n => `<span class="stars" role="img" aria-label="${n} sur 5">${'★'.repeat(n)}<i>${'★'.repeat(5 - n)}</i></span>`;
 
-const date = $('#date'), heure = $('#heure'), nb = $('#nb'), puces = $('#puces');
-const finaliser = $('#finaliser'), recap = $('#recap');
-const MAX = Math.max(...TABLES.map(t => t.places));
-let convives = 2, salle = null, choix = null;
+const liste = $('#avis-liste'), formAvis = $('#avis-form'), retour = $('#avis-retour');
+$('#avis-note').hidden = !CONFIG.avisLocaux;
 
-const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-const auj = new Date();
-date.min = date.value = iso(auj);
-CONFIG.creneaux.forEach(c => heure.append(new Option(c.replace(':', ' h '), c)));
-heure.value = CONFIG.creneaux.find(c => c >= '19:00') || CONFIG.creneaux[0];
-$('#demo').hidden = !CONFIG.demoOccupation;
-
-function hash(s) { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return (h >>> 0) % 100; }
-function etats() {
-  const cle = date.value + ' ' + heure.value, miens = lire().filter(r => r.quand === cle).map(r => r.table);
-  const e = {};
-  TABLES.forEach(t => {
-    const prise = miens.includes(t.id) || (CONFIG.demoOccupation && hash(cle + '#' + t.id) < 28);
-    e[t.id] = prise ? 'prise' : t.places < convives ? 'petite' : 'libre';
-  });
-  return e;
-}
-
-function maj() {
-  nb.textContent = convives;
-  $('#moins').disabled = convives <= 1; $('#plus').disabled = convives >= MAX;
-  const e = etats();
-  if (choix && e[choix] !== 'libre') choix = null;
-  if (salle) { salle.majEtats(e); salle.choisir(choix); }
-  puces.innerHTML = '';
-  TABLES.forEach(t => {
-    const b = el('button', 'puce ' + e[t.id] + (t.id === choix ? ' choisie' : ''), `<b>Table ${t.id}</b><span>${e[t.id] === 'prise' ? 'réservée' : t.places + ' pers.'}</span>`);
-    b.type = 'button'; b.disabled = e[t.id] !== 'libre'; b.setAttribute('aria-pressed', t.id === choix);
-    b.onclick = () => choisir(t.id);
-    puces.append(b);
-  });
-  finaliser.hidden = !choix;
-  if (choix) {
-    const t = TABLES.find(t => t.id === choix);
-    const d = new Date(date.value + 'T12:00').toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
-    recap.innerHTML = `<b>Table ${t.id}</b> · ${convives} ${convives > 1 ? 'personnes' : 'personne'}<br>${d} à ${heure.value.replace(':', ' h ')}`;
+function afficherAvis() {
+  const avis = lire();
+  if (!avis.length) {
+    liste.innerHTML = '<div class="vide"><b>Aucun avis pour l’instant</b>Soyez le premier à partager votre expérience.</div>';
+    return;
   }
-}
-function choisir(id) {
-  const avant = choix;
-  choix = choix === id ? null : id;
-  maj();
-  if (choix && !avant && matchMedia('(max-width: 760px)').matches) finaliser.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  const moy = avis.reduce((s, a) => s + a.note, 0) / avis.length;
+  liste.innerHTML = `<div class="bilan"><span class="moy">${moy.toFixed(1).replace('.', ',')}</span><div>${etoiles(Math.round(moy))}<small>${avis.length} avis</small></div></div>`
+    + avis.map(a => `
+    <article class="un-avis">
+      <header>
+        <span class="pastille" aria-hidden="true">${esc(a.nom.charAt(0).toUpperCase())}</span>
+        <span class="qui"><b>${esc(a.nom)}</b><time datetime="${esc(a.date)}">${new Date(a.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</time></span>
+        ${etoiles(a.note)}
+      </header>
+      <p>${esc(a.texte)}</p>
+    </article>`).join('');
 }
 
-$('#moins').onclick = () => { convives = Math.max(1, convives - 1); maj(); };
-$('#plus').onclick = () => { convives = Math.min(MAX, convives + 1); maj(); };
-date.onchange = heure.onchange = maj;
-
-finaliser.addEventListener('submit', e => {
+formAvis.addEventListener('submit', e => {
   e.preventDefault();
-  const t = TABLES.find(t => t.id === choix); if (!t) return;
-  const nom = $('#nom').value.trim(), tel = $('#tel').value.trim(), mot = $('#mot').value.trim();
-  const d = new Date(date.value + 'T12:00').toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-  const h = heure.value.replace(':', ' h ');
-  ecrire([...lire(), { quand: date.value + ' ' + heure.value, table: t.id, convives, nom, tel, mot }]);
-  const message = `Bonjour, je souhaite réserver chez ${CONFIG.nom} :\n• ${d} à ${h}\n• ${convives} personne${convives > 1 ? 's' : ''}\n• Table ${t.id}\n• Nom : ${nom}\n• Téléphone : ${tel}${mot ? `\n• Note : ${mot}` : ''}`;
-  const dlg = $('#confirmation');
-  dlg.innerHTML = `
-    <button class="fermer" aria-label="Fermer">✕</button>
-    <div class="coche" aria-hidden="true">✓</div>
-    <h3>${CONFIG.whatsapp ? 'Dernière étape' : 'Demande enregistrée'}</h3>
-    <p class="desc"><b>Table ${t.id}</b> · ${convives} personne${convives > 1 ? 's' : ''}<br>${d} à ${h}<br>Au nom de ${esc(nom)}</p>
-    ${CONFIG.whatsapp
-      ? `<a class="btn btn-or" target="_blank" rel="noopener" href="https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(message)}">Envoyer sur WhatsApp</a><p class="mini">Votre table est confirmée dès que le restaurant vous répond.</p>`
-      : `<p class="mini">Site en démonstration : la demande n’est pas encore transmise au restaurant.</p>`}`;
-  dlg.querySelector('.fermer').onclick = () => dlg.close();
-  dlg.showModal();
-  choix = null; finaliser.reset(); maj();
+  const nom = $('#avis-nom').value.trim(), texte = $('#avis-texte').value.trim();
+  const note = Number(new FormData(formAvis).get('note'));
+  retour.className = 'erreur';
+  if (!note) { retour.textContent = 'Choisissez une note en touchant les étoiles.'; return; }
+  if (!nom || !texte) { retour.textContent = 'Indiquez votre nom et votre commentaire.'; return; }
+  ecrire([{ nom, note, texte, date: new Date().toISOString() }, ...lire()]);
+  formAvis.reset();
+  retour.className = 'merci'; retour.textContent = 'Merci pour votre avis !';
+  afficherAvis();
 });
-
-maj();
-
-// la 3D est chargée seulement quand la section approche de l'écran
-const scene = $('#scene');
-new IntersectionObserver(async (entrees, obs) => {
-  if (!entrees[0].isIntersecting) return;
-  obs.disconnect();
-  try {
-    const { creerSalle } = await import('./salle.js');
-    salle = creerSalle(scene, TABLES, SALLE, {
-      onChoix: (id, etat) => { if (etat === 'libre') choisir(id); },
-    });
-    scene.classList.add('prete'); maj();
-  } catch (err) {
-    console.error(err);
-    scene.classList.add('sans-3d');
-    scene.textContent = 'La vue 3D n’est pas disponible sur cet appareil : choisissez votre table dans la liste ci-dessous.';
-  }
-}, { rootMargin: '600px' }).observe(scene);
+afficherAvis();

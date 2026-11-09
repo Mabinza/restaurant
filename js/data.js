@@ -1,22 +1,16 @@
 // ─────────────────────────────────────────────────────────────
 //  Kaboul Paris Nord — données du site
-//  Tout ce qui change souvent (infos, menu, tables) est ici.
+//  Tout ce qui change souvent (infos, menu) est ici.
 // ─────────────────────────────────────────────────────────────
 
 export const CONFIG = {
   nom: 'Kaboul Paris Nord',
-  // Numéro WhatsApp du restaurant au format international sans « + » (ex. '33612345678').
-  // Tant qu'il est vide, la réservation affiche seulement un récapitulatif.
-  whatsapp: '',
   telephone: '',
   adresse: '',
   horaires: '',
-  // Créneaux proposés à la réservation (à adapter aux vrais horaires).
-  creneaux: ['12:00', '12:30', '13:00', '13:30', '14:00', '14:30',
-             '19:00', '19:30', '20:00', '20:30', '21:00', '21:30', '22:00'],
-  // true = des tables apparaissent « réservées » de façon simulée, pour la démo.
-  // À passer à false dès que les vraies réservations sont branchées.
-  demoOccupation: true,
+  // true = les avis restent dans le navigateur du visiteur (pas encore de serveur).
+  // À passer à false quand les avis seront enregistrés en ligne.
+  avisLocaux: true,
 };
 
 const P = 'assets/img/plats/';
@@ -114,25 +108,4 @@ export const MENU = [
       { nom: 'Bouteille d’eau 1,5L', prix: 2 },
     ],
   },
-];
-
-// ─────────────────────────────────────────────────────────────
-//  Plan de salle — PLAN D'EXEMPLE.
-//  À remplacer par le vrai plan (scan Polycam « Room »).
-//  x / z en mètres depuis le centre de la salle ; forme : 'ronde' | 'rect'.
-// ─────────────────────────────────────────────────────────────
-export const SALLE = { largeur: 13, profondeur: 10 };
-
-export const TABLES = [
-  { id: 1,  places: 4, forme: 'rect',  x: -5.0, z: -3.3 },
-  { id: 2,  places: 4, forme: 'rect',  x: -2.2, z: -3.3 },
-  { id: 3,  places: 4, forme: 'rect',  x:  0.6, z: -3.3 },
-  { id: 4,  places: 2, forme: 'ronde', x: -5.1, z: -0.2 },
-  { id: 5,  places: 6, forme: 'rect',  x: -2.0, z: -0.2 },
-  { id: 6,  places: 4, forme: 'rect',  x:  1.5, z: -0.2 },
-  { id: 7,  places: 2, forme: 'ronde', x:  4.6, z: -0.2 },
-  { id: 8,  places: 4, forme: 'rect',  x: -4.9, z:  3.0 },
-  { id: 9,  places: 2, forme: 'ronde', x: -2.0, z:  3.0 },
-  { id: 10, places: 2, forme: 'ronde', x:  0.5, z:  3.0 },
-  { id: 11, places: 6, forme: 'rect',  x:  3.9, z:  3.0 },
 ];
