@@ -1,86 +1,258 @@
-import { CONFIG, MENU } from './data.js';
+import { CONFIG, MENU, DEFILE, VEDETTES, BONS_PLANS } from './data.js';
 
-const $ = s => document.querySelector(s);
+// ───────── utilitaires ─────────
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
 const prix = p => p.toFixed(2).replace('.', ',') + ' €';
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const sansAccent = s => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/œ/g, 'oe');
+const slug = s => sansAccent(s).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const stock = {
+  lire: (cle, defaut) => { try { return JSON.parse(localStorage.getItem(cle)) ?? defaut; } catch (e) { return defaut; } },
+  ecrire: (cle, v) => { try { localStorage.setItem(cle, JSON.stringify(v)); } catch (e) {} },
+};
+const calme = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// Chaque plat reçoit un identifiant et connaît sa catégorie.
+const PLATS = new Map();
+MENU.forEach(cat => cat.items.forEach(it => { it.id = slug(it.nom); it.cat = cat; PLATS.set(it.id, it); }));
+const parNom = nom => PLATS.get(slug(nom));
+const detoure = it => it.img?.endsWith('.webp');
+
+let toastFin;
+function toast(msg) {
+  const t = $('#toast'); ($('dialog[open]') || document.body).append(t); t.textContent = msg; void t.offsetWidth; t.classList.add('vu');
+  clearTimeout(toastFin); toastFin = setTimeout(() => t.classList.remove('vu'), 2200);
+}
 
 // ───────── barre ─────────
 const barre = $('#barre');
 const majBarre = () => barre.classList.toggle('pleine', scrollY > 40);
 addEventListener('scroll', majBarre, { passive: true }); majBarre();
+$('#annee').textContent = new Date().getFullYear();
 
-// ───────── carte ─────────
-const onglets = $('#onglets'), plats = $('#plats'), fiche = $('#fiche');
+// ───────── accueil : les plats défilent ─────────
+{
+  const scene = $('#defile'), legende = $('#defile-legende');
+  const plats = DEFILE.map(parNom).filter(Boolean);
+  plats.forEach((it, i) => {
+    const img = el('img'); img.src = it.img; img.alt = ''; img.decoding = 'async';
+    scene.append(img);
+  });
+  let i = -1, minuteur;
+  const montrer = n => {
+    i = (n + plats.length) % plats.length;
+    $$('img', scene).forEach((im, k) => im.classList.toggle('actif', k === i));
+    const it = plats[i];
+    legende.innerHTML = `<span>${esc(it.nom.replace(/ \+ naan$/, ''))}</span><b>${prix(it.prix)}</b>`;
+    legende.onclick = () => ouvrirFiche(it);
+  };
+  const lancer = () => { clearInterval(minuteur); if (!calme && plats.length > 1) minuteur = setInterval(() => montrer(i + 1), 4200); };
+  montrer(0); lancer();
+  document.addEventListener('visibilitychange', () => document.hidden ? clearInterval(minuteur) : lancer());
+}
 
+// ───────── ruban ─────────
+{
+  const noms = MENU.filter(c => !c.liste).flatMap(c => c.items.map(it => it.nom.replace(/ \+.*$| \(.*$| \/.*$/g, '')));
+  const uniques = [...new Set(noms)].filter(n => n.length < 22 && !/^\d/.test(n));
+  const bloc = uniques.map(n => `<span>${esc(n)}</span><i>✦</i>`).join('');
+  $('#ruban').innerHTML = bloc + bloc;
+}
+
+// ───────── atouts ─────────
+$('#atout-nb').textContent = PLATS.size;
+$('#atout-prix').textContent = prix(Math.min(...MENU.find(c => c.id === 'mijotes').items.filter(it => /naan/.test(it.nom)).map(it => it.prix))).replace(',00', '');
+
+// ───────── incontournables ─────────
+VEDETTES.forEach((v, n) => {
+  const it = parNom(v.plat); if (!it) return;
+  const bloc = el('article', 'vedette rv' + (n % 2 ? ' inverse' : ''), `
+    <div class="vedette-img ${v.cadre ? 'cadre' : 'detoure'}"><img src="${v.img || it.img}" alt="${esc(v.titre || it.nom)}" loading="lazy"></div>
+    <div class="vedette-texte">
+      <p class="sur">${esc(v.sur)}</p>
+      <h3>${esc(v.titre || it.nom)}</h3>
+      <p>${esc(v.texte)}</p>
+      <div class="vedette-bas">
+        <span class="prix">${v.prix ? esc(v.prix) : prix(it.prix)}</span>
+        <a class="lien" href="#c-${it.cat.id}">Voir sur la carte →</a>
+      </div>
+    </div>`);
+  $('#vedettes').append(bloc);
+});
+
+// ───────── bons plans ─────────
+BONS_PLANS.map(parNom).filter(Boolean).forEach(it => {
+  const c = el('button', 'plan-carte rv ' + (detoure(it) ? 'detoure' : 'photo'), `
+    <span class="visuel"><img src="${it.img}" alt="" loading="lazy"></span>
+    <span class="nom">${esc(it.nom)}</span>
+    <span class="prix">${prix(it.prix)}</span>`);
+  c.type = 'button'; c.onclick = () => ouvrirFiche(it);
+  $('#plans').append(c);
+});
+
+// ───────── ma sélection ─────────
+const CLE_SEL = 'kpn-selection';
+let selection = stock.lire(CLE_SEL, {});
+Object.keys(selection).forEach(id => { if (!PLATS.has(id)) delete selection[id]; });
+const nbSel = () => Object.values(selection).reduce((a, b) => a + b, 0);
+const totalSel = () => Object.entries(selection).reduce((s, [id, q]) => s + PLATS.get(id).prix * q, 0);
+const tiroir = $('#selection');
+
+function changer(id, delta) {
+  const q = Math.max(0, (selection[id] || 0) + delta);
+  if (q) selection[id] = q; else delete selection[id];
+  stock.ecrire(CLE_SEL, selection);
+  majSelection();
+}
+function texteSelection() {
+  const lignes = Object.entries(selection).map(([id, q]) => `${q} × ${PLATS.get(id).nom} — ${prix(PLATS.get(id).prix * q)}`);
+  return `Ma sélection — ${CONFIG.nom}\n${lignes.join('\n')}\nTotal : ${prix(totalSel())}`;
+}
+function majSelection() {
+  const n = nbSel();
+  $$('.compte').forEach(c => { c.textContent = n; c.hidden = !n; });
+  $$('.plus').forEach(b => {
+    const q = selection[b.dataset.id] || 0;
+    b.classList.toggle('pris', q > 0); b.textContent = q || '+';
+    b.setAttribute('aria-label', `Ajouter ${PLATS.get(b.dataset.id).nom} à ma sélection${q ? ` (${q} déjà)` : ''}`);
+  });
+  if (tiroir.open) dessinerTiroir();
+}
+function dessinerTiroir() {
+  const lignes = Object.entries(selection);
+  const tel = CONFIG.telephone.replace(/\s/g, '');
+  tiroir.innerHTML = `
+    <header><h3 id="selection-titre">Ma sélection</h3><button class="fermer" aria-label="Fermer">✕</button></header>
+    ${lignes.length ? `
+    <ul class="lignes">${lignes.map(([id, q]) => { const it = PLATS.get(id); return `
+      <li>
+        ${it.img ? `<img class="${detoure(it) ? 'detoure' : 'photo'}" src="${it.img}" alt="">` : '<span class="sans-img">✦</span>'}
+        <span class="quoi"><b>${esc(it.nom)}</b><small>${prix(it.prix)}</small></span>
+        <span class="qte"><button data-id="${id}" data-d="-1" aria-label="Un de moins">−</button><output>${q}</output><button data-id="${id}" data-d="1" aria-label="Un de plus">+</button></span>
+      </li>`; }).join('')}</ul>
+    <div class="total"><span>Total estimé</span><b>${prix(totalSel())}</b></div>
+    <p class="mini">Ce n’est pas une commande : montrez cette liste au comptoir${tel ? ' ou appelez-nous' : ''}.</p>
+    <div class="tiroir-actions">
+      ${CONFIG.whatsapp ? `<a class="btn btn-or" target="_blank" rel="noopener" href="https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent('Bonjour, je souhaite commander :\n' + texteSelection())}">Envoyer sur WhatsApp</a>` : ''}
+      ${tel ? `<a class="btn ${CONFIG.whatsapp ? 'btn-ligne' : 'btn-or'}" href="tel:${tel}">Appeler le restaurant</a>` : ''}
+      <button class="btn ${CONFIG.whatsapp || tel ? 'btn-ligne' : 'btn-or'}" id="partager" type="button">Partager ma sélection</button>
+      <button class="lien-discret" id="vider" type="button">Tout effacer</button>
+    </div>` : `
+    <div class="vide"><b>Votre sélection est vide</b>Touchez le + d’un plat pour l’ajouter et voir le total.</div>
+    <div class="tiroir-actions"><a class="btn btn-or" href="#carte" id="vers-carte">Voir la carte</a></div>`}`;
+  $('.fermer', tiroir).onclick = () => tiroir.close();
+  $$('.qte button', tiroir).forEach(b => b.onclick = () => changer(b.dataset.id, +b.dataset.d));
+  $('#vers-carte', tiroir)?.addEventListener('click', () => tiroir.close());
+  $('#vider', tiroir)?.addEventListener('click', () => { selection = {}; stock.ecrire(CLE_SEL, selection); majSelection(); });
+  $('#partager', tiroir)?.addEventListener('click', async () => {
+    const text = texteSelection();
+    try {
+      if (navigator.share) await navigator.share({ title: 'Ma sélection — ' + CONFIG.nom, text });
+      else { await navigator.clipboard.writeText(text); toast('Sélection copiée'); }
+    } catch (e) { if (e.name !== 'AbortError') toast('Partage impossible sur cet appareil'); }
+  });
+}
+$$('.ouvre-selection').forEach(b => b.onclick = () => { dessinerTiroir(); tiroir.showModal(); });
+
+// ───────── fiche d'un plat ─────────
+const fiche = $('#fiche');
 function ouvrirFiche(it) {
   fiche.innerHTML = `
     <button class="fermer" aria-label="Fermer">✕</button>
-    <div class="fiche-img ${it.img.endsWith('.webp') ? 'detoure' : 'photo'}"><img src="${it.img}" alt=""></div>
+    ${it.img ? `<div class="fiche-img ${detoure(it) ? 'detoure' : 'photo'}"><img src="${it.img}" alt=""></div>` : ''}
+    <p class="sur">${esc(it.cat.titre)}</p>
     <h3>${esc(it.nom)}</h3>
     ${it.desc ? `<p class="desc">${esc(it.desc)}</p>` : ''}
-    <p class="prix">${prix(it.prix)}</p>`;
-  fiche.querySelector('.fermer').onclick = () => fiche.close();
+    ${it.cat.note ? `<p class="desc">${esc(it.cat.note)}</p>` : ''}
+    <p class="prix">${prix(it.prix)}</p>
+    <button class="btn btn-or" id="fiche-ajout" type="button">Ajouter à ma sélection</button>`;
+  $('.fermer', fiche).onclick = () => fiche.close();
+  $('#fiche-ajout', fiche).onclick = () => { changer(it.id, 1); fiche.close(); toast(`${it.nom} ajouté`); };
   fiche.showModal();
 }
-document.querySelectorAll('dialog').forEach(d => d.addEventListener('click', e => { if (e.target === d) d.close(); }));
+$$('dialog').forEach(d => d.addEventListener('click', e => { if (e.target === d) d.close(); }));
 
-function afficher(cat) {
-  [...onglets.children].forEach(b => { const on = b.dataset.id === cat.id; b.classList.toggle('actif', on); b.setAttribute('aria-selected', on); });
-  plats.innerHTML = '';
-  plats.className = 'plats ' + (cat.liste ? 'en-liste' : 'en-grille');
-  if (cat.note) plats.append(el('p', 'note', esc(cat.note)));
-  if (cat.liste) {
-    const photo = el('div', 'liste-photo', `<img src="${cat.photo}" alt="${esc(cat.titre)}" loading="lazy">`);
-    const ul = el('ul', 'liste');
-    cat.items.forEach(it => ul.append(el('li', '', `<span class="n">${esc(it.nom)}${it.desc ? `<small>${esc(it.desc)}</small>` : ''}</span><span class="pts"></span><span class="p">${prix(it.prix)}</span>`)));
-    plats.append(ul, photo);
-    return;
-  }
-  cat.items.forEach((it, i) => {
-    const c = el('button', 'plat ' + (it.img.endsWith('.webp') ? 'detoure' : 'photo'));
-    c.type = 'button'; c.style.setProperty('--i', i);
-    c.innerHTML = `
-      <span class="visuel"><img src="${it.img}" alt="" loading="lazy"></span>
-      ${it.badge ? `<span class="badge">${esc(it.badge)}</span>` : ''}
-      <span class="nom">${esc(it.nom)}</span>
-      ${it.desc ? `<span class="desc">${esc(it.desc)}</span>` : ''}
-      <span class="prix">${prix(it.prix)}</span>`;
-    c.onclick = () => ouvrirFiche(it);
-    plats.append(c);
-  });
-}
+// ───────── la carte ─────────
+const onglets = $('#onglets'), categories = $('#categories');
+const boutonPlus = it => `<button class="plus" type="button" data-id="${it.id}">+</button>`;
 
 MENU.forEach(cat => {
-  const b = el('button', 'onglet', esc(cat.nom));
-  b.type = 'button'; b.dataset.id = cat.id; b.setAttribute('role', 'tab');
-  b.onclick = () => { afficher(cat); onglets.scrollTo({ left: b.offsetLeft - (onglets.clientWidth - b.offsetWidth) / 2, behavior: 'smooth' }); };
-  onglets.append(b);
-});
-afficher(MENU[0]);
+  const lien = el('a', 'onglet', esc(cat.nom)); lien.href = '#c-' + cat.id; lien.dataset.id = cat.id;
+  onglets.append(lien);
 
-// ───────── infos ─────────
-const infos = [
-  ['Adresse', CONFIG.adresse, CONFIG.adresse && `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(CONFIG.nom + ' ' + CONFIG.adresse)}`, 'Itinéraire'],
-  ['Horaires', CONFIG.horaires],
-  ['Téléphone', CONFIG.telephone, CONFIG.telephone && 'tel:' + CONFIG.telephone.replace(/\s/g, ''), 'Appeler'],
-];
-infos.forEach(([titre, val, lien, action]) => {
-  $('#cartes-infos').append(el('div', 'info', `<h3>${titre}</h3><p>${val ? esc(val).replace(/\n/g, '<br>') : '<span class="avenir">Bientôt en ligne</span>'}</p>${lien ? `<a href="${lien}" class="lien">${action} →</a>` : ''}`));
+  const sec = el('section', 'categorie'); sec.id = 'c-' + cat.id; sec.dataset.id = cat.id;
+  sec.append(el('header', 'cat-titre rv', `<h3>${esc(cat.titre)}</h3>${cat.note ? `<p>${esc(cat.note)}</p>` : ''}`));
+
+  if (cat.liste) {
+    const bloc = el('div', 'en-liste');
+    const ul = el('ul', 'liste');
+    cat.items.forEach(it => {
+      const li = el('li', 'ligne', `<span class="n">${esc(it.nom)}${it.desc ? `<small>${esc(it.desc)}</small>` : ''}</span><span class="pts"></span><span class="p">${prix(it.prix)}</span>${boutonPlus(it)}`);
+      li.dataset.q = sansAccent(it.nom + ' ' + (it.desc || '') + ' ' + cat.nom);
+      ul.append(li);
+    });
+    bloc.append(ul, el('div', 'liste-photo rv', `<img src="${cat.photo}" alt="${esc(cat.titre)}" loading="lazy">`));
+    sec.append(bloc);
+  } else {
+    const grille = el('div', 'en-grille');
+    cat.items.forEach(it => {
+      const c = el('article', 'plat rv ' + (detoure(it) ? 'detoure' : 'photo'), `
+        <button class="ouvrir" type="button" aria-label="Voir ${esc(it.nom)}">
+          <span class="visuel"><img src="${it.img}" alt="" loading="lazy"></span>
+          ${it.badge ? `<span class="badge">${esc(it.badge)}</span>` : ''}
+          <span class="nom">${esc(it.nom)}</span>
+          ${it.desc ? `<span class="desc">${esc(it.desc)}</span>` : ''}
+        </button>
+        <div class="bas"><span class="prix">${prix(it.prix)}</span>${boutonPlus(it)}</div>`);
+      c.dataset.q = sansAccent(it.nom + ' ' + (it.desc || '') + ' ' + cat.nom);
+      $('.ouvrir', c).onclick = () => ouvrirFiche(it);
+      grille.append(c);
+    });
+    sec.append(grille);
+  }
+  categories.append(sec);
+});
+
+categories.addEventListener('click', e => {
+  const b = e.target.closest('.plus'); if (!b) return;
+  changer(b.dataset.id, 1);
+  b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop');
+});
+
+// l'onglet actif suit le défilement
+const activer = id => $$('.onglet', onglets).forEach(o => {
+  const on = o.dataset.id === id; o.classList.toggle('actif', on);
+  if (on) { o.setAttribute('aria-current', 'true'); onglets.scrollTo({ left: o.offsetLeft - (onglets.clientWidth - o.offsetWidth) / 2, behavior: calme ? 'auto' : 'smooth' }); }
+  else o.removeAttribute('aria-current');
+});
+const espion = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) activer(e.target.dataset.id); }), { rootMargin: '-35% 0px -60% 0px' });
+$$('.categorie').forEach(s => espion.observe(s));
+activer(MENU[0].id);
+
+// recherche
+$('#recherche').addEventListener('input', e => {
+  const mots = sansAccent(e.target.value).split(/\s+/).filter(Boolean);
+  let total = 0;
+  $$('.categorie').forEach(sec => {
+    let n = 0;
+    $$('[data-q]', sec).forEach(p => { const ok = mots.every(m => p.dataset.q.includes(m)); p.hidden = !ok; if (ok) { n++; p.classList.add('vu'); } });
+    sec.hidden = !n; total += n;
+    const photo = $('.liste-photo', sec); if (photo) photo.hidden = mots.length > 0;
+  });
+  $('#aucun').hidden = total > 0;
 });
 
 // ───────── avis ─────────
-// Sans serveur, les avis sont gardés dans le navigateur du visiteur (localStorage).
-const CLE = 'kpn-avis';
-const lire = () => { try { return JSON.parse(localStorage.getItem(CLE)) || []; } catch (e) { return []; } };
-const ecrire = l => { try { localStorage.setItem(CLE, JSON.stringify(l)); } catch (e) {} };
+const CLE_AVIS = 'kpn-avis';
 const etoiles = n => `<span class="stars" role="img" aria-label="${n} sur 5">${'★'.repeat(n)}<i>${'★'.repeat(5 - n)}</i></span>`;
-
 const liste = $('#avis-liste'), formAvis = $('#avis-form'), retour = $('#avis-retour');
 $('#avis-note').hidden = !CONFIG.avisLocaux;
+if (CONFIG.googleAvis) { const g = $('#avis-google'); g.href = CONFIG.googleAvis; g.hidden = false; }
 
 function afficherAvis() {
-  const avis = lire();
+  const avis = stock.lire(CLE_AVIS, []);
   if (!avis.length) {
     liste.innerHTML = '<div class="vide"><b>Aucun avis pour l’instant</b>Soyez le premier à partager votre expérience.</div>';
     return;
@@ -97,7 +269,6 @@ function afficherAvis() {
       <p>${esc(a.texte)}</p>
     </article>`).join('');
 }
-
 formAvis.addEventListener('submit', e => {
   e.preventDefault();
   const nom = $('#avis-nom').value.trim(), texte = $('#avis-texte').value.trim();
@@ -105,9 +276,74 @@ formAvis.addEventListener('submit', e => {
   retour.className = 'erreur';
   if (!note) { retour.textContent = 'Choisissez une note en touchant les étoiles.'; return; }
   if (!nom || !texte) { retour.textContent = 'Indiquez votre nom et votre commentaire.'; return; }
-  ecrire([{ nom, note, texte, date: new Date().toISOString() }, ...lire()]);
+  stock.ecrire(CLE_AVIS, [{ nom, note, texte, date: new Date().toISOString() }, ...stock.lire(CLE_AVIS, [])]);
   formAvis.reset();
   retour.className = 'merci'; retour.textContent = 'Merci pour votre avis !';
   afficherAvis();
 });
 afficherAvis();
+
+// ───────── infos pratiques ─────────
+const JOURS = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+const plages = txt => (txt.match(/\d{1,2}:\d{2}\s*-\s*\d{1,2}:\d{2}/g) || []).map(p => p.split('-').map(h => { const [a, b] = h.trim().split(':').map(Number); return a * 60 + b; }));
+const joli = txt => plages(txt).length ? txt.replace(/(\d{1,2}):(\d{2})/g, (_, h, m) => `${+h} h${m === '00' ? '' : ' ' + m}`).replace(/\s*-\s*/g, ' – ').replace(/,\s*/g, ' · ') : 'Fermé';
+
+function etatOuverture() {
+  if (CONFIG.horaires.length !== 7) return null;
+  const d = new Date(), j = (d.getDay() + 6) % 7, min = d.getHours() * 60 + d.getMinutes();
+  const auj = plages(CONFIG.horaires[j]), hier = plages(CONFIG.horaires[(j + 6) % 7]);
+  const fin = t => `${Math.floor(t / 60)} h${t % 60 ? ' ' + String(t % 60).padStart(2, '0') : ''}`;
+  for (const [a, b] of hier) if (b <= a && min < b) return { ouvert: true, texte: `Ouvert · jusqu’à ${fin(b)}` };
+  for (const [a, b] of auj) if (min >= a && (min < b || b <= a)) return { ouvert: true, texte: `Ouvert · jusqu’à ${fin(b)}` };
+  const suite = auj.find(([a]) => a > min);
+  return { ouvert: false, texte: suite ? `Fermé · ouvre à ${fin(suite[0])}` : 'Fermé actuellement' };
+}
+
+{
+  const tel = CONFIG.telephone.replace(/\s/g, '');
+  const carteMaps = CONFIG.adresse && `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(CONFIG.nom + ' ' + CONFIG.adresse)}`;
+  const etat = etatOuverture();
+  const aVenir = '<span class="avenir">Bientôt en ligne</span>';
+  const grilleHoraires = CONFIG.horaires.length === 7
+    ? `<table class="horaires">${JOURS.map((jr, k) => `<tr class="${k === (new Date().getDay() + 6) % 7 ? 'auj' : ''}"><th scope="row">${jr}</th><td>${esc(joli(CONFIG.horaires[k]))}</td></tr>`).join('')}</table>`
+    : aVenir;
+  const ICONES = {
+    lieu: 'M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21Zm0-9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z',
+    heure: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Zm0 4v5l3.5 2',
+    tel: 'M6 3h4l1.5 5L9 9.5a12 12 0 0 0 5.5 5.5l1.500-2.500 5 1.500v4a2 2 0 0 1-2 2A16 16 0 0 1 4 5a2 2 0 0 1 2-2Z',
+  };
+  const cartes = [
+    [ICONES.lieu, 'Adresse', CONFIG.adresse ? esc(CONFIG.adresse) : aVenir, carteMaps && `<a class="btn btn-ligne petit" target="_blank" rel="noopener" href="${carteMaps}">Itinéraire</a>`],
+    [ICONES.heure, 'Horaires', (etat ? `<span class="etat ${etat.ouvert ? 'oui' : 'non'}">${esc(etat.texte)}</span>` : '') + grilleHoraires],
+    [ICONES.tel, 'Téléphone', CONFIG.telephone ? esc(CONFIG.telephone) : aVenir, tel && `<a class="btn btn-or petit" href="tel:${tel}">Appeler</a>`],
+  ];
+  cartes.forEach(([icone, titre, corps, action]) => $('#cartes-infos').append(el('div', 'info rv', `<svg class="ic grand" viewBox="0 0 24 24" aria-hidden="true"><path d="${icone}"/></svg><h3>${titre}</h3><div class="corps">${corps}</div>${action || ''}`)));
+
+  if (CONFIG.adresse) {
+    const plan = $('#plan'); plan.hidden = false;
+    plan.innerHTML = `<iframe title="Plan d’accès" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=${encodeURIComponent(CONFIG.nom + ' ' + CONFIG.adresse)}&output=embed"></iframe>`;
+  }
+  if (etat) { const b = $('#ouvert-barre'); b.hidden = false; b.textContent = etat.ouvert ? 'Ouvert' : 'Fermé'; b.classList.add(etat.ouvert ? 'oui' : 'non'); }
+  if (tel) { const d = $('#dock-infos'); d.href = 'tel:' + tel; d.innerHTML = `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="${ICONES.tel}"/></svg>Appeler`; }
+
+  const reseaux = [['Instagram', CONFIG.instagram], ['TikTok', CONFIG.tiktok], ['Uber Eats', CONFIG.uberEats], ['Deliveroo', CONFIG.deliveroo]].filter(r => r[1]);
+  $('#reseaux').innerHTML = reseaux.map(([n, u]) => `<a target="_blank" rel="noopener" href="${esc(u)}">${n}</a>`).join('');
+
+  // Données structurées pour Google (fiche restaurant + carte).
+  const ld = {
+    '@context': 'https://schema.org', '@type': 'Restaurant', name: CONFIG.nom, servesCuisine: ['Afghane', 'Halal', 'Pizza'],
+    priceRange: '€', image: new URL('assets/img/partage.jpg', location.href).href, url: location.origin + location.pathname,
+    ...(CONFIG.adresse && { address: CONFIG.adresse }), ...(CONFIG.telephone && { telephone: CONFIG.telephone }),
+    hasMenu: { '@type': 'Menu', hasMenuSection: MENU.map(c => ({ '@type': 'MenuSection', name: c.titre, hasMenuItem: c.items.map(it => ({ '@type': 'MenuItem', name: it.nom, ...(it.desc && { description: it.desc }), offers: { '@type': 'Offer', price: it.prix.toFixed(2), priceCurrency: 'EUR' } })) })) },
+  };
+  const s = el('script'); s.type = 'application/ld+json'; s.textContent = JSON.stringify(ld); document.head.append(s);
+}
+
+// ───────── apparition au défilement ─────────
+if (calme || !('IntersectionObserver' in window)) $$('.rv').forEach(e => e.classList.add('vu'));
+else {
+  const vue = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vu'); vue.unobserve(e.target); } }), { rootMargin: '0px 0px -6% 0px' });
+  $$('.rv').forEach(e => vue.observe(e));
+}
+
+majSelection();

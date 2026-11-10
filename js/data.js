@@ -5,9 +5,25 @@
 
 export const CONFIG = {
   nom: 'Kaboul Paris Nord',
-  telephone: '',
-  adresse: '',
-  horaires: '',
+
+  // ── Coordonnées : à remplir. Tant qu'un champ est vide, le site le masque
+  //    ou affiche « Bientôt en ligne ».
+  adresse: '',            // ex. '12 rue de Dunkerque, 75010 Paris'
+  telephone: '',          // ex. '01 23 45 67 89'
+  whatsapp: '',           // format international sans « + », ex. '33612345678'
+
+  // Horaires, du lundi au dimanche (7 lignes). Exemples :
+  //   '11:00-23:00'   ·   '11:30-15:00, 18:30-23:00'   ·   'fermé'
+  // Laisser le tableau vide tant que les horaires ne sont pas connus.
+  horaires: [],
+
+  // Liens facultatifs (laisser vide pour masquer le bouton).
+  googleAvis: '',         // lien « Laisser un avis » de la fiche Google
+  instagram: '',
+  tiktok: '',
+  uberEats: '',
+  deliveroo: '',
+
   // true = les avis restent dans le navigateur du visiteur (pas encore de serveur).
   // À passer à false quand les avis seront enregistrés en ligne.
   avisLocaux: true,
@@ -109,3 +125,33 @@ export const MENU = [
     ],
   },
 ];
+
+// ─────────────────────────────────────────────────────────────
+//  Page d'accueil
+// ─────────────────────────────────────────────────────────────
+
+// Plats qui défilent en haut de page (photos détourées uniquement).
+export const DEFILE = ['Karahi poulet tikka + naan', 'Mantou', 'Poisson avec riz', 'Pizza Bollywood',
+                       '10 wings + frites & boisson 33cl', 'Naan fromage + 4 pièces poulet tikka'];
+
+// Les incontournables. ⚠️ Textes de présentation à valider par le restaurant.
+export const VEDETTES = [
+  {
+    plat: 'Kabuli palaw', img: 'assets/img/kabuli-couverture.jpg', cadre: true, sur: 'Le plat national afghan',
+    texte: 'Un riz basmati parfumé, des carottes fondantes, des raisins secs et de généreux morceaux de viande. S’il ne fallait en goûter qu’un, ce serait celui-là.',
+  },
+  {
+    plat: 'Mantou', sur: 'Les raviolis afghans',
+    texte: 'Des raviolis cuits à la vapeur, nappés de sauce et parsemés d’herbes fraîches, servis avec leur salade et leur chutney.',
+  },
+  {
+    plat: 'Karahi poulet tikka + naan', titre: 'Karahi', sur: 'Mijoté dans son plat traditionnel',
+    texte: 'Il porte le nom du plat dans lequel il mijote et arrive à table. Au poulet, à l’agneau ou au poulet tikka, toujours avec un naan tout chaud.',
+    prix: 'à partir de 25,00 €',
+  },
+];
+
+// Les bons plans : des plats de la carte, mis en avant.
+export const BONS_PLANS = ['Chapli kebab + 2 naans nature & boisson 33cl', '10 wings + frites & boisson 33cl',
+                           'Naan fromage + 4 pièces poulet tikka', 'Assiette mixte'];
+

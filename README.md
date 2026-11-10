@@ -1,7 +1,13 @@
 # Kaboul Paris Nord — site du restaurant
 
-Site vitrine du restaurant : la carte avec les photos des plats, les avis des clients
-et les infos pratiques. Responsive (téléphone, tablette, ordinateur).
+Site vitrine du restaurant, pensé d'abord pour le téléphone :
+
+- **Accueil** avec les plats qui défilent, le logo et le badge halal
+- **Les incontournables** : trois plats présentés pour ceux qui découvrent la cuisine afghane
+- **Les bons plans** : les formules de la carte mises en avant
+- **La carte complète** : catégories, recherche, fiche de chaque plat
+- **Ma sélection** : le client compose sa liste, voit le total et peut la partager
+- **Avis** des clients et **infos pratiques** (adresse, horaires, téléphone, plan)
 
 ## Lancer le site en local
 
@@ -14,24 +20,37 @@ python3 -m http.server 8000
 
 ## Où modifier quoi
 
-| Quoi | Fichier |
+Presque tout se règle dans **`js/data.js`** :
+
+| Quoi | Où |
 | --- | --- |
-| Adresse, horaires, téléphone | `js/data.js` → `CONFIG` |
-| Plats, prix, catégories | `js/data.js` → `MENU` |
-| Photos des plats | `assets/img/plats/` |
-| Couleurs, typographie | `css/style.css` (variables en haut du fichier) |
+| Adresse, téléphone, WhatsApp, horaires, liens (Google, Instagram…) | `CONFIG` |
+| Plats, prix, catégories | `MENU` |
+| Plats qui défilent en haut de page | `DEFILE` |
+| Textes des incontournables | `VEDETTES` |
+| Bons plans mis en avant | `BONS_PLANS` |
+
+Le reste : photos dans `assets/img/plats/`, couleurs et typographie en haut de `css/style.css`.
+
+Dès qu'un champ de `CONFIG` est rempli, le site s'adapte tout seul : bouton « Appeler »,
+itinéraire et plan Google Maps, tableau des horaires avec l'indication « Ouvert / Fermé »,
+envoi de la sélection par WhatsApp, liens vers les réseaux.
 
 Les photos en `.webp` sont détourées (fond transparent) ; celles en `.jpg` viennent
 du menu PDF et sont à remplacer par les photos en haute définition.
 
 ## État actuel — à savoir
 
+- **Coordonnées vides** : adresse, horaires et téléphone affichent « Bientôt en ligne ».
 - **Les avis ne sont pas encore partagés.** Le site n'a pas de serveur : un avis publié est
   gardé dans le navigateur du visiteur et n'est visible que sur son appareil
   (`avisLocaux: true` dans `CONFIG`). Pour des avis publics, il faut brancher une base en ligne.
-- L'adresse, les horaires et le téléphone sont vides : la section « Infos » affiche
-  « Bientôt en ligne » en attendant.
+- **« Ma sélection » n'est pas une commande** : c'est une liste avec un total, à montrer au
+  comptoir ou à envoyer. Rien n'arrive au restaurant tant que le WhatsApp n'est pas renseigné.
+- **Textes des incontournables** : rédigés à partir des photos, à valider par le restaurant.
 
 ## Technique
 
-HTML / CSS / JavaScript sans étape de build ni dépendance.
+HTML / CSS / JavaScript sans étape de build ni dépendance. Le site fournit aussi les
+balises de partage (aperçu sur WhatsApp, Instagram…) et les données structurées
+schema.org pour Google (restaurant + carte).

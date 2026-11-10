@@ -3,71 +3,130 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Kaboul Paris Nord — Restaurant afghan · Halal</title>
-<meta name="description" content="Kaboul Paris Nord : cuisine afghane, saveurs parisiennes. Découvrez la carte et laissez votre avis.">
+<title>Kaboul Paris Nord — Restaurant afghan halal · La carte</title>
+<meta name="description" content="Kaboul Paris Nord, restaurant afghan halal : kabuli palaw, mantou, karahi, grillades, naans et pizzas. Découvrez toute la carte et les prix.">
 <meta name="theme-color" content="#1d070b">
-<link rel="icon" href="assets/img/logo-tour.png">
+<meta property="og:type" content="restaurant">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:site_name" content="Kaboul Paris Nord">
+<meta property="og:title" content="Kaboul Paris Nord — Cuisine afghane, saveurs parisiennes">
+<meta property="og:description" content="Kabuli palaw, mantou, karahi, grillades, naans et pizzas. Halal. Découvrez toute la carte.">
+<meta property="og:image" content="assets/img/partage.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/img/icone-180.png">
+<link rel="manifest" href="manifest.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="assets/img/plats/karahi-tikka.webp">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+<a class="evitement" href="#carte">Aller à la carte</a>
 
 <header class="barre" id="barre">
   <a class="marque" href="#accueil" aria-label="Kaboul Paris Nord — accueil">
-    <img src="assets/img/logo-tour.png" alt="" width="20" height="33">
+    <img src="assets/img/tour.svg" alt="" width="20" height="31">
     <span>Kaboul <em>Paris Nord</em></span>
   </a>
   <nav aria-label="Navigation principale">
+    <a href="#incontournables">Incontournables</a>
     <a href="#carte">La carte</a>
     <a href="#avis">Avis</a>
     <a href="#infos">Infos</a>
   </nav>
-  <a class="btn btn-or petit" href="#carte">Voir la carte</a>
+  <span class="ouvert" id="ouvert-barre" hidden></span>
+  <button class="btn btn-or petit ouvre-selection" type="button">
+    <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8h12l-1 12H7L6 8Z"/><path d="M9 8V7a3 3 0 0 1 6 0v1"/></svg>
+    Ma sélection <b class="compte" hidden>0</b>
+  </button>
 </header>
 
 <main>
   <!-- ───────── ACCUEIL ───────── -->
   <section class="accueil" id="accueil">
     <div class="accueil-texte">
-      <img class="logo" src="assets/img/logo.png" alt="Kaboul Paris Nord Restaurant" width="284" height="385">
+      <div class="logo" role="img" aria-label="Kaboul Paris Nord Restaurant">
+        <img src="assets/img/tour.svg" alt="" width="150" height="233">
+        <span class="l1">Kaboul</span>
+        <span class="l2">Paris Nord</span>
+        <span class="l3">Restaurant</span>
+      </div>
       <p class="farsi" lang="fa" dir="rtl">کابل پاریس رستورانت</p>
       <h1>Cuisine afghane <span>•</span> saveurs parisiennes</h1>
+      <p class="accroche">Kabuli palaw, mantou, karahi, grillades et naans sortis du four — et même des pizzas.</p>
       <div class="actions">
         <a class="btn btn-or" href="#carte">Voir la carte</a>
-        <a class="btn btn-ligne" href="#avis">Donner mon avis</a>
+        <a class="btn btn-ligne" href="#infos">Nous trouver</a>
       </div>
     </div>
-    <div class="accueil-plat" aria-hidden="true">
-      <div class="halo"></div>
-      <img src="assets/img/plats/karahi-tikka.webp" alt="" width="760" height="645">
-      <span class="halal"><b lang="ar">حلال</b><i>Halal</i></span>
+    <div class="accueil-plat">
+      <div class="halo" aria-hidden="true"></div>
+      <div class="scene" id="defile"></div>
+      <button class="legende" id="defile-legende" type="button"></button>
+      <span class="halal" aria-label="Halal"><b lang="ar" aria-hidden="true">حلال</b><i aria-hidden="true">Halal</i></span>
     </div>
-    <a class="defiler" href="#carte" aria-label="Descendre vers la carte"><span></span></a>
+  </section>
+
+  <div class="ruban" aria-hidden="true"><div class="ruban-piste" id="ruban"></div></div>
+
+  <!-- ───────── ARGUMENTS ───────── -->
+  <section class="atouts" aria-label="En bref">
+    <div class="atout rv"><b lang="ar">حلال</b><span>Une carte halal</span></div>
+    <div class="atout rv"><b id="atout-prix">8 €</b><span>le plat mijoté, servi avec son naan</span></div>
+    <div class="atout rv"><b id="atout-nb">50</b><span>plats et boissons à la carte</span></div>
+  </section>
+
+  <!-- ───────── INCONTOURNABLES ───────── -->
+  <section class="vedettes" id="incontournables">
+    <div class="entete rv">
+      <p class="sur">À goûter absolument</p>
+      <h2>Les incontournables</h2>
+      <div class="filet"></div>
+      <p class="intro">Vous découvrez la cuisine afghane ? Commencez par ces trois plats.</p>
+    </div>
+    <div id="vedettes"></div>
+  </section>
+
+  <!-- ───────── BONS PLANS ───────── -->
+  <section class="plans" id="bons-plans">
+    <div class="entete rv">
+      <p class="sur">Petits prix</p>
+      <h2>Les bons plans</h2>
+      <div class="filet"></div>
+    </div>
+    <div class="plans-piste" id="plans"></div>
   </section>
 
   <!-- ───────── CARTE ───────── -->
   <section class="carte" id="carte">
-    <div class="entete">
-      <p class="sur">Fait maison · 100 % halal</p>
+    <div class="entete rv">
+      <p class="sur">Tous nos plats</p>
       <h2>La carte</h2>
       <div class="filet"></div>
+      <p class="intro">Touchez un plat pour le voir en grand, et le <b>+</b> pour l’ajouter à votre sélection.</p>
+      <label class="recherche">
+        <span class="sr">Chercher un plat</span>
+        <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input type="search" id="recherche" placeholder="Chercher un plat : naan, poulet, pizza…" autocomplete="off" enterkeyhint="search">
+      </label>
     </div>
-    <div class="onglets" id="onglets" role="tablist" aria-label="Catégories de la carte"></div>
-    <div id="plats" class="plats" role="tabpanel"></div>
+    <nav class="onglets" id="onglets" aria-label="Catégories de la carte"></nav>
+    <div id="categories"></div>
+    <p class="vide" id="aucun" hidden><b>Aucun plat trouvé</b>Essayez un autre mot, ou parcourez les catégories.</p>
   </section>
 
   <!-- ───────── AVIS ───────── -->
   <section class="avis" id="avis">
-    <div class="entete">
+    <div class="entete rv">
       <p class="sur">Votre expérience</p>
       <h2>Vos avis</h2>
       <div class="filet"></div>
       <p class="intro">Vous êtes venu manger chez nous ? Dites-nous ce que vous en avez pensé.</p>
     </div>
     <div class="avis-grille">
-      <form class="avis-form" id="avis-form" novalidate>
+      <form class="avis-form rv" id="avis-form" novalidate>
         <h3>Laisser un avis</h3>
         <fieldset>
           <legend>Votre note</legend>
@@ -84,6 +143,7 @@
         <button class="btn btn-or" type="submit">Publier mon avis</button>
         <p id="avis-retour" role="status"></p>
         <p class="note-locale" id="avis-note" hidden>Pour l’instant, votre avis est enregistré sur cet appareil uniquement.</p>
+        <a class="btn btn-ligne" id="avis-google" target="_blank" rel="noopener" hidden>Laisser aussi un avis sur Google</a>
       </form>
       <div class="avis-liste" id="avis-liste" aria-live="polite"></div>
     </div>
@@ -91,22 +151,43 @@
 
   <!-- ───────── INFOS ───────── -->
   <section class="infos" id="infos">
-    <div class="entete">
+    <div class="entete rv">
       <p class="sur">Nous trouver</p>
       <h2>Infos pratiques</h2>
       <div class="filet"></div>
     </div>
     <div class="cartes-infos" id="cartes-infos"></div>
+    <div class="plan" id="plan" hidden></div>
   </section>
 </main>
 
 <footer>
-  <img src="assets/img/logo-tour.png" alt="" width="28" height="46">
-  <p>Kaboul Paris Nord · Cuisine afghane · Halal</p>
+  <div class="logo mini" aria-hidden="true">
+    <img src="assets/img/tour.svg" alt="" width="54" height="84" loading="lazy">
+    <span class="l1">Kaboul</span>
+    <span class="l2">Paris Nord</span>
+  </div>
+  <p>Cuisine afghane · saveurs parisiennes · halal</p>
+  <div class="reseaux" id="reseaux"></div>
+  <nav aria-label="Pied de page">
+    <a href="#carte">La carte</a><a href="#avis">Avis</a><a href="#infos">Infos</a>
+  </nav>
+  <p class="petit-texte">© <span id="annee"></span> Kaboul Paris Nord · Prix TTC, photos non contractuelles</p>
 </footer>
 
-<dialog id="fiche" class="fiche"></dialog>
+<!-- barre d'actions (téléphone) -->
+<nav class="dock" aria-label="Accès rapide">
+  <a href="#carte"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5z"/><path d="M9 9h6M9 13h6M9 17h3"/></svg>Carte</a>
+  <a href="#avis"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m12 4 2.5 5.2 5.5.8-4 4 1 5.6-5-2.7-5 2.7 1-5.6-4-4 5.5-.8L12 4Z"/></svg>Avis</a>
+  <a href="#infos" id="dock-infos"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.500C5 14.800 12 21 12 21Z"/><circle cx="12" cy="9.500" r="2.500"/></svg>Infos</a>
+  <button type="button" class="ouvre-selection"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8h12l-1 12H7L6 8Z"/><path d="M9 8V7a3 3 0 0 1 6 0v1"/></svg>Sélection<b class="compte" hidden>0</b></button>
+</nav>
 
+<dialog id="fiche" class="fiche"></dialog>
+<dialog id="selection" class="tiroir" aria-labelledby="selection-titre"></dialog>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<noscript><p class="sans-js">Activez JavaScript pour afficher la carte du restaurant.</p></noscript>
 <script type="module" src="js/app.js"></script>
 </body>
 </html>
