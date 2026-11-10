@@ -39,7 +39,7 @@ export const MENU = [
     items: [
       { nom: 'Kabuli palaw', prix: 10, img: P + 'kabuli-palaw.webp', badge: 'Notre spécialité' },
       { nom: 'Assiette mixte', prix: 14, img: P + 'assiette-mixte.webp' },
-      { nom: 'Mantou', prix: 10, img: P + 'mantou.webp' },
+      { nom: 'Mantou', prix: 10, img: P + 'mantou.webp', badge: 'Notre spécialité' },
       { nom: 'Biryani', prix: 8, img: P + 'biryani.webp' },
       { nom: 'Assiette poulet kebab', prix: 9, img: P + 'assiette-poulet-kebab.webp' },
       { nom: 'Chapli kebab + 2 naans nature & boisson 33cl', prix: 10, img: P + 'chapli-kebab.webp' },
@@ -99,10 +99,10 @@ export const MENU = [
     id: 'naans', nom: 'Naans & soupe', titre: 'Naans & soupe',
     items: [
       { nom: 'Bolani', prix: 2, img: P + 'bolani.webp' },
-      { nom: 'Afghani naan', prix: 1.5, img: P + 'afghani-naan.webp' },
+      { nom: 'Afghani naan', prix: 1.5, img: P + 'afghani-naan.webp', badge: 'Notre spécialité' },
       { nom: 'Naan nature', prix: 1, img: P + 'naan-nature.webp' },
       { nom: 'Naan fromage', prix: 2.5, img: P + 'naan-fromage.webp' },
-      { nom: 'Afghani soupe', prix: 5, img: P + 'soupe.webp' },
+      { nom: 'Afghani soupe', prix: 5, img: P + 'soupe.webp', badge: 'Notre spécialité' },
     ],
   },
   {
