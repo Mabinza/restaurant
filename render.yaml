@@ -1,0 +1,16 @@
+# Mise en ligne sur Render (site statique, offre gratuite).
+# Render lit ce fichier quand on crée un « Blueprint » à partir du dépôt.
+services:
+  - type: web
+    name: kaboul-paris-nord
+    runtime: static
+    branch: claude/brave-maxwell-qdpp65
+    buildCommand: echo "Site statique, rien à construire"
+    staticPublishPath: .
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: public, max-age=0, must-revalidate
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=86400

@@ -11,8 +11,14 @@ Site vitrine du restaurant, pensé d'abord pour le téléphone :
 
 ## En ligne
 
-https://kaboulparisnord.netlify.app — Netlify publie automatiquement la branche à chaque modification.
-Si l'adresse change (nom de domaine), la mettre à jour dans les balises `og:` et `canonical` de `index.html`.
+Le site est statique : il se publie tel quel, sans étape de construction.
+
+- **Render** : `render.yaml` décrit le déploiement (New → Blueprint, ou New → Static Site avec
+  la branche du site, aucune commande de build et `.` comme dossier publié).
+- Adresse actuelle (Netlify) : https://kaboulparisnord.netlify.app
+
+Quand l'adresse change, la mettre à jour dans les balises `og:url`, `og:image` et `canonical`
+de `index.html`, sinon l'aperçu du lien partagé pointe vers l'ancienne.
 
 ## Lancer le site en local
 
