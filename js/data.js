@@ -35,12 +35,12 @@ export const MENU = [
   {
     id: 'specialites', nom: 'Spécialités', titre: 'Les plats',
     items: [
-      { nom: 'Assiette mixte', prix: 14, img: P + 'assiette-mixte.jpg', badge: 'Notre spécialité' },
+      { nom: 'Assiette mixte', prix: 14, img: P + 'assiette-mixte.webp', badge: 'Notre spécialité' },
       { nom: 'Kabuli palaw', prix: 10, img: P + 'kabuli-palaw.jpg' },
       { nom: 'Mantou', prix: 10, img: P + 'mantou.webp' },
       { nom: 'Biryani', prix: 8, img: P + 'biryani.jpg' },
-      { nom: 'Assiette poulet kebab', prix: 9, img: P + 'assiette-poulet-kebab.jpg' },
-      { nom: 'Chapli kebab + 2 naans nature & boisson 33cl', prix: 10, img: P + 'chapli-kebab.jpg' },
+      { nom: 'Assiette poulet kebab', prix: 9, img: P + 'assiette-poulet-kebab.webp' },
+      { nom: 'Chapli kebab + 2 naans nature & boisson 33cl', prix: 10, img: P + 'chapli-kebab.webp' },
       { nom: 'Poisson avec riz', prix: 9, img: P + 'poisson.webp' },
     ],
   },
@@ -48,7 +48,7 @@ export const MENU = [
     id: 'entrees', nom: 'Entrées', titre: 'Les entrées',
     items: [
       { nom: 'Naan fromage + 4 pièces poulet tikka', prix: 6, img: P + 'naan-tikka.webp' },
-      { nom: 'Seekh kebab (2 pièces)', prix: 4, img: P + 'seekh-kebab.jpg' },
+      { nom: 'Seekh kebab (2 pièces)', prix: 4, img: P + 'seekh-kebab.webp' },
       { nom: 'Samossa (2 pièces)', prix: 3, img: P + 'samossa.jpg' },
       { nom: 'Schante samossa (2 pièces)', prix: 4, img: P + 'schante-samossa.jpg' },
       { nom: 'Poulet tandoori', prix: 3, img: P + 'poulet-tandoori.webp' },
@@ -61,19 +61,19 @@ export const MENU = [
     items: [
       { nom: 'Paya pacha / pied de bœuf', prix: 8, img: P + 'paya.webp' },
       { nom: 'Kurma + naan', prix: 8, img: P + 'kurma.jpg' },
-      { nom: 'Keema + naan', prix: 8, img: P + 'keema.jpg' },
-      { nom: 'Kofta + naan', prix: 8, img: P + 'kofta.jpg' },
+      { nom: 'Keema + naan', prix: 8, img: P + 'keema.webp' },
+      { nom: 'Kofta + naan', prix: 8, img: P + 'kofta.webp' },
       { nom: 'Poulet korma + naan', prix: 8, img: P + 'poulet-korma.jpg' },
-      { nom: 'Veau kurma + naan', prix: 12, img: P + 'veau-kurma.jpg' },
+      { nom: 'Veau kurma + naan', prix: 12, img: P + 'veau-kurma.webp' },
       { nom: 'Depiaza + naan', prix: 12, img: P + 'depiaza.jpg' },
-      { nom: 'Foie de bœuf + naan', prix: 8, img: P + 'foie.jpg' },
+      { nom: 'Foie de bœuf + naan', prix: 8, img: P + 'foie.webp' },
       { nom: 'Épinards + naan', prix: 8, img: P + 'epinards.jpg' },
       { nom: 'Bamia + naan', prix: 8, img: P + 'bamia.webp' },
-      { nom: 'Chou-fleur + naan', prix: 8, img: P + 'chou-fleur.jpg' },
-      { nom: 'Haricots rouges + naan', prix: 8, img: P + 'haricots.jpg' },
-      { nom: 'Pois chiches + naan', prix: 8, img: P + 'pois-chiches.jpg' },
+      { nom: 'Chou-fleur + naan', prix: 8, img: P + 'chou-fleur.webp' },
+      { nom: 'Haricots rouges + naan', prix: 8, img: P + 'haricots.webp' },
+      { nom: 'Pois chiches + naan', prix: 8, img: P + 'pois-chiches.webp' },
       { nom: 'Lentilles + naan', prix: 8, img: P + 'lentilles.jpg' },
-      { nom: 'Riz avec sauce au choix', prix: 8, img: P + 'riz-sauce.jpg' },
+      { nom: 'Riz avec sauce au choix', prix: 8, img: P + 'riz-sauce.webp' },
       { nom: 'Riz blanc', prix: 4, img: P + 'riz-blanc.webp' },
     ],
   },
@@ -81,7 +81,7 @@ export const MENU = [
     id: 'karahi', nom: 'Karahi', titre: 'Karahi', note: 'Servis avec naan',
     items: [
       { nom: 'Karahi poulet + naan', prix: 25, img: P + 'karahi-poulet.jpg' },
-      { nom: 'Karahi agneau + naan', prix: 35, img: P + 'karahi-agneau.jpg' },
+      { nom: 'Karahi agneau + naan', prix: 35, img: P + 'karahi-agneau.webp' },
       { nom: 'Karahi poulet tikka + naan', prix: 30, img: P + 'karahi-tikka.webp' },
     ],
   },
@@ -96,10 +96,10 @@ export const MENU = [
   {
     id: 'naans', nom: 'Naans & soupe', titre: 'Naans & soupe', liste: true, photo: P + 'naans-soupe.jpg',
     items: [
-      { nom: 'Bolani', prix: 2 },
+      { nom: 'Bolani', prix: 2, img: P + 'bolani.webp' },
       { nom: 'Afghani naan', prix: 1.5 },
       { nom: 'Naan nature', prix: 1 },
-      { nom: 'Naan fromage', prix: 2.5 },
+      { nom: 'Naan fromage', prix: 2.5, img: P + 'naan-fromage.webp' },
       { nom: 'Afghani soupe', prix: 5 },
     ],
   },
@@ -121,7 +121,7 @@ export const MENU = [
 // ─────────────────────────────────────────────────────────────
 
 // Plats qui défilent en haut de page (photos détourées uniquement).
-export const DEFILE = ['Karahi poulet tikka + naan', 'Mantou', 'Poisson avec riz',
+export const DEFILE = ['Karahi poulet tikka + naan', 'Assiette mixte', 'Mantou', 'Poisson avec riz',
                        '10 wings + frites & boisson 33cl', 'Naan fromage + 4 pièces poulet tikka'];
 
 // Les incontournables. ⚠️ Textes de présentation à valider par le restaurant.
