@@ -6,6 +6,16 @@
 export const CONFIG = {
   nom: 'Kaboul Paris Nord',
 
+  // Société qui exploite le restaurant (mentions légales).
+  societe: {
+    nom: 'SAS Amin Jan',
+    tva: 'FR45 108 643 503',
+    siren: '108 643 503',   // déduit du numéro de TVA
+    siret: '',              // à compléter (14 chiffres)
+    responsable: '',        // responsable de la publication, à compléter
+    hebergeur: 'Render Services, Inc. — 525 Brannan Street, Suite 300, San Francisco, CA 94107, États-Unis — render.com',
+  },
+
   // ── Coordonnées : à remplir. Tant qu'un champ est vide, le site le masque
   //    ou affiche « Bientôt en ligne ».
   adresse: '153 rue La Fayette, 75010 Paris',

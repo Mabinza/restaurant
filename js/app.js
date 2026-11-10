@@ -1,4 +1,4 @@
-import { CONFIG, MENU, DEFILE, VEDETTES, BONS_PLANS } from './data.js?v=202611101713';
+import { CONFIG, MENU, DEFILE, VEDETTES, BONS_PLANS } from './data.js?v=202611102014';
 
 // ───────── utilitaires ─────────
 const $ = (s, r = document) => r.querySelector(s);
@@ -30,27 +30,35 @@ function toast(msg) {
 const barre = $('#barre');
 const majBarre = () => barre.classList.toggle('pleine', scrollY > 40);
 addEventListener('scroll', majBarre, { passive: true }); majBarre();
-$('#annee').textContent = new Date().getFullYear();
 
 // ───────── accueil : les plats défilent ─────────
+// Les animations en boucle se mettent en pause dès qu'elles sortent de l'écran.
+const visibles = new Map();
+const surveille = 'IntersectionObserver' in window ? new IntersectionObserver(es => es.forEach(e => {
+  e.target.classList.toggle('hors-ecran', !e.isIntersecting);
+  visibles.get(e.target)?.(e.isIntersecting);
+})) : null;
+const pauseHorsEcran = (elem, quand) => { if (quand) visibles.set(elem, quand); surveille?.observe(elem); };
 {
   const scene = $('#defile'), legende = $('#defile-legende');
   const plats = DEFILE.map(parNom).filter(Boolean);
-  plats.forEach((it, i) => {
-    const img = el('img'); img.src = it.img; img.alt = ''; img.decoding = 'async';
-    scene.append(img);
-  });
-  let i = -1, minuteur;
+  const imgs = plats.map(() => { const img = el('img'); img.alt = ''; img.decoding = 'async'; scene.append(img); return img; });
+  // On ne charge que l'image affichée et la suivante.
+  const charger = n => { const k = (n + plats.length) % plats.length; if (!imgs[k].getAttribute('src')) imgs[k].src = plats[k].img; };
+  let i = -1, minuteur, aLEcran = true;
   const montrer = n => {
     i = (n + plats.length) % plats.length;
-    $$('img', scene).forEach((im, k) => im.classList.toggle('actif', k === i));
+    charger(i); charger(i + 1);
+    imgs.forEach((im, k) => im.classList.toggle('actif', k === i));
     const it = plats[i];
     legende.innerHTML = `<span>${esc(it.nom.replace(/ \+ naan$/, ''))}</span><b>${prix(it.prix)}</b>`;
     legende.onclick = () => ouvrirFiche(it);
   };
-  const lancer = () => { clearInterval(minuteur); if (!calme && plats.length > 1) minuteur = setInterval(() => montrer(i + 1), 4200); };
+  const lancer = () => { clearInterval(minuteur); if (!calme && plats.length > 1 && aLEcran && !document.hidden) minuteur = setInterval(() => montrer(i + 1), 4200); };
   montrer(0); lancer();
-  document.addEventListener('visibilitychange', () => document.hidden ? clearInterval(minuteur) : lancer());
+  document.addEventListener('visibilitychange', lancer);
+  pauseHorsEcran($('#accueil'), vu => { aLEcran = vu; lancer(); });
+  pauseHorsEcran($('.ruban'));
 }
 
 // ───────── ruban ─────────
@@ -84,7 +92,7 @@ VEDETTES.forEach((v, n) => {
 
 // ───────── bons plans ─────────
 BONS_PLANS.map(parNom).filter(Boolean).forEach(it => {
-  const c = el('button', 'plan-carte rv ' + (detoure(it) ? 'detoure' : 'photo'), `
+  const c = el('button', 'plan-carte ' + (detoure(it) ? 'detoure' : 'photo'), `
     <span class="visuel"><img src="${it.img}" alt="" loading="lazy"></span>
     <span class="nom">${esc(it.nom)}</span>
     <span class="prix">${prix(it.prix)}</span>`);
@@ -198,9 +206,9 @@ MENU.forEach(cat => {
   } else {
     const grille = el('div', 'en-grille');
     cat.items.forEach(it => {
-      const c = el('article', 'plat rv ' + (!it.img ? 'sans-photo' : detoure(it) ? 'detoure' : 'photo'), `
+      const c = el('article', 'plat ' + (!it.img ? 'sans-photo' : detoure(it) ? 'detoure' : 'photo'), `
         <button class="ouvrir" type="button" aria-label="Voir ${esc(it.nom)}">
-          <span class="visuel"><img src="${it.img || 'assets/img/tour.svg'}" alt="" loading="lazy"></span>
+          <span class="visuel"><img src="${it.img || 'assets/img/tour.svg'}" alt="" loading="lazy" decoding="async"></span>
           ${it.badge ? `<span class="badge">${esc(it.badge)}</span>` : ''}
           <span class="nom">${esc(it.nom)}</span>
           ${it.desc ? `<span class="desc">${esc(it.desc)}</span>` : ''}
@@ -222,10 +230,14 @@ categories.addEventListener('click', e => {
 });
 
 // l'onglet actif suit le défilement
+let centrage;
 const activer = id => $$('.onglet', onglets).forEach(o => {
   const on = o.dataset.id === id; o.classList.toggle('actif', on);
-  if (on) { o.setAttribute('aria-current', 'true'); onglets.scrollTo({ left: o.offsetLeft - (onglets.clientWidth - o.offsetWidth) / 2, behavior: calme ? 'auto' : 'smooth' }); }
-  else o.removeAttribute('aria-current');
+  if (!on) { o.removeAttribute('aria-current'); return; }
+  o.setAttribute('aria-current', 'true');
+  // La barre ne se recentre qu'une fois le défilement posé.
+  clearTimeout(centrage);
+  centrage = setTimeout(() => onglets.scrollTo({ left: o.offsetLeft - (onglets.clientWidth - o.offsetWidth) / 2, behavior: calme ? 'auto' : 'smooth' }), 160);
 });
 const espion = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) activer(e.target.dataset.id); }), { rootMargin: '-35% 0px -60% 0px' });
 $$('.categorie').forEach(s => espion.observe(s));
@@ -370,6 +382,31 @@ function etatOuverture() {
     hasMenu: { '@type': 'Menu', hasMenuSection: MENU.map(c => ({ '@type': 'MenuSection', name: c.titre, hasMenuItem: c.items.map(it => ({ '@type': 'MenuItem', name: it.nom, ...(it.desc && { description: it.desc }), offers: { '@type': 'Offer', price: it.prix.toFixed(2), priceCurrency: 'EUR' } })) })) },
   };
   const s = el('script'); s.type = 'application/ld+json'; s.textContent = JSON.stringify(ld); document.head.append(s);
+}
+
+// ───────── mentions légales ─────────
+{
+  const s = CONFIG.societe, m = $('#mentions');
+  $('#droits').textContent = `© ${new Date().getFullYear()} ${CONFIG.nom} — ${s.nom} · Tous droits réservés`;
+  m.innerHTML = `
+    <button class="fermer" aria-label="Fermer">✕</button>
+    <h3>Mentions légales</h3>
+    <h4>Éditeur du site</h4>
+    <p>${esc(s.nom)}<br>${esc(CONFIG.adresse)}<br>
+      ${s.siret ? `SIRET : ${esc(s.siret)}<br>` : s.siren ? `SIREN : ${esc(s.siren)}<br>` : ''}
+      N° de TVA intracommunautaire : ${esc(s.tva)}
+      ${s.responsable ? `<br>Responsable de la publication : ${esc(s.responsable)}` : ''}
+      ${CONFIG.telephone ? `<br>Téléphone : ${esc(CONFIG.telephone)}` : ''}</p>
+    <h4>Hébergement</h4>
+    <p>${esc(s.hebergeur)}</p>
+    <h4>Propriété intellectuelle</h4>
+    <p>Le logo, les textes, les photos et l’ensemble du contenu de ce site appartiennent à ${esc(s.nom)}. Toute copie ou réutilisation sans autorisation écrite est interdite.</p>
+    <h4>Données personnelles</h4>
+    <p>Quand vous publiez un avis, votre nom, votre note et votre commentaire sont enregistrés et affichés publiquement sur ce site. Votre sélection de plats reste uniquement sur votre appareil. Le site n’utilise aucun cookie publicitaire ni outil de suivi. Pour faire retirer un avis, adressez-vous au restaurant.</p>
+    <h4>Prix</h4>
+    <p>Prix TTC. Photos non contractuelles.</p>`;
+  $('.fermer', m).onclick = () => m.close();
+  $('#ouvre-mentions').onclick = () => m.showModal();
 }
 
 // ───────── apparition au défilement ─────────

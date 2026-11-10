@@ -82,4 +82,5 @@ Les navigateurs gardent le site en mémoire. Après avoir changé `js/data.js`, 
 
 ## Droits
 
-© Kaboul Paris Nord. Tous droits réservés — voir `LICENSE`.
+© SAS Amin Jan (Kaboul Paris Nord). Tous droits réservés — voir `LICENSE`.
+Les mentions légales affichées sur le site viennent de `CONFIG.societe` dans `js/data.js`.
