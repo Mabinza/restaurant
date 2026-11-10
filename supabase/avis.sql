@@ -1,5 +1,5 @@
 -- Table des avis du site Kaboul Paris Nord.
--- À coller une seule fois dans Supabase : SQL Editor → New query → Run.
+-- Déjà appliqué au projet « kaboul-paris-nord ». Gardé ici pour référence.
 
 create table public.avis (
   id         bigint generated always as identity primary key,
@@ -11,6 +11,7 @@ create table public.avis (
 );
 
 alter table public.avis enable row level security;
+revoke all on public.avis from anon, authenticated;
 grant select, insert on public.avis to anon;
 
 -- Les visiteurs peuvent lire les avis visibles et en ajouter. Ils ne peuvent ni modifier ni supprimer.

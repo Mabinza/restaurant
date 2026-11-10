@@ -26,8 +26,8 @@ export const CONFIG = {
 
   // Sauvegarde des avis en ligne (Supabase). Tant que ces deux champs sont vides,
   // les avis restent dans le navigateur du visiteur. Voir le README.
-  supabaseUrl: '',        // ex. 'https://abcdefgh.supabase.co'
-  supabaseCle: '',        // clé publique « anon » / « publishable » (jamais la clé « service_role »)
+  supabaseUrl: 'https://xksgdbmtqqeubuedgxqv.supabase.co',
+  supabaseCle: 'sb_publishable_kZ371KxzbwMLJPBra4mVKw_xAcfnTlN',   // clé publique « anon » / « publishable » (jamais la clé « service_role »)
 };
 
 const P = 'assets/img/plats/';
