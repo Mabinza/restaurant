@@ -68,7 +68,7 @@ export const MENU = [
       { nom: 'Depiaza + naan', prix: 12, img: P + 'depiaza.jpg' },
       { nom: 'Foie de bœuf + naan', prix: 8, img: P + 'foie.jpg' },
       { nom: 'Épinards + naan', prix: 8, img: P + 'epinards.jpg' },
-      { nom: 'Bamia + naan', prix: 8, img: P + 'bamia.jpg' },
+      { nom: 'Bamia + naan', prix: 8, img: P + 'bamia.webp' },
       { nom: 'Chou-fleur + naan', prix: 8, img: P + 'chou-fleur.jpg' },
       { nom: 'Haricots rouges + naan', prix: 8, img: P + 'haricots.jpg' },
       { nom: 'Pois chiches + naan', prix: 8, img: P + 'pois-chiches.jpg' },
