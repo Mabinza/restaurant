@@ -13,9 +13,9 @@ Site vitrine du restaurant, pensé d'abord pour le téléphone :
 
 Le site est statique : il se publie tel quel, sans étape de construction.
 
-- **Render** : `render.yaml` décrit le déploiement (New → Blueprint, ou New → Static Site avec
-  la branche du site, aucune commande de build et `.` comme dossier publié).
-- Adresse actuelle (Netlify) : https://kaboulparisnord.netlify.app
+- Adresse : https://kaboulparisnord.onrender.com
+- Hébergé sur **Render** (site statique « kaboulparisnord »), qui republie automatiquement la branche
+  à chaque modification. `render.yaml` décrit ce déploiement.
 
 Quand l'adresse change, la mettre à jour dans les balises `og:url`, `og:image` et `canonical`
 de `index.html`, sinon l'aperçu du lien partagé pointe vers l'ancienne.

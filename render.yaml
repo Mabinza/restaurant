@@ -2,7 +2,7 @@
 # Render lit ce fichier quand on crée un « Blueprint » à partir du dépôt.
 services:
   - type: web
-    name: kaboul-paris-nord
+    name: kaboulparisnord
     runtime: static
     branch: claude/brave-maxwell-qdpp65
     buildCommand: echo "Site statique, rien à construire"
