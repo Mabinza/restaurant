@@ -1,4 +1,4 @@
-import { CONFIG, MENU, DEFILE, VEDETTES, BONS_PLANS } from './data.js?v=202611101546';
+import { CONFIG, MENU, DEFILE, VEDETTES, BONS_PLANS } from './data.js?v=202611101549';
 
 // ───────── utilitaires ─────────
 const $ = (s, r = document) => r.querySelector(s);
@@ -245,14 +245,32 @@ $('#recherche').addEventListener('input', e => {
 });
 
 // ───────── avis ─────────
+// Avec Supabase configuré, les avis sont enregistrés en ligne et visibles par tous.
+// Sinon ils restent dans le navigateur du visiteur.
 const CLE_AVIS = 'kpn-avis';
-const etoiles = n => `<span class="stars" role="img" aria-label="${n} sur 5">${'★'.repeat(n)}<i>${'★'.repeat(5 - n)}</i></span>`;
-const liste = $('#avis-liste'), formAvis = $('#avis-form'), retour = $('#avis-retour');
-$('#avis-note').hidden = !CONFIG.avisLocaux;
-if (CONFIG.googleAvis) { const g = $('#avis-google'); g.href = CONFIG.googleAvis; g.hidden = false; }
+const enLigne = Boolean(CONFIG.supabaseUrl && CONFIG.supabaseCle);
+const api = (chemin, options = {}) => fetch(CONFIG.supabaseUrl.replace(/\/$/, '') + '/rest/v1/' + chemin, {
+  ...options,
+  headers: { apikey: CONFIG.supabaseCle, Authorization: 'Bearer ' + CONFIG.supabaseCle, 'Content-Type': 'application/json', ...options.headers },
+}).then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r; });
+const depot = {
+  lire: () => enLigne
+    ? api('avis?select=nom,note,texte,date:created_at&visible=is.true&order=created_at.desc&limit=200').then(r => r.json())
+    : Promise.resolve(stock.lire(CLE_AVIS, [])),
+  ajouter: avis => enLigne
+    ? api('avis', { method: 'POST', headers: { Prefer: 'return=minimal' }, body: JSON.stringify(avis) })
+    : Promise.resolve(stock.ecrire(CLE_AVIS, [{ ...avis, date: new Date().toISOString() }, ...stock.lire(CLE_AVIS, [])])),
+};
 
-function afficherAvis() {
-  const avis = stock.lire(CLE_AVIS, []);
+const etoiles = n => `<span class="stars" role="img" aria-label="${n} sur 5">${'★'.repeat(n)}<i>${'★'.repeat(5 - n)}</i></span>`;
+const liste = $('#avis-liste'), formAvis = $('#avis-form'), retour = $('#avis-retour'), lienGoogle = $('#avis-google');
+$('#avis-note').hidden = enLigne;
+if (CONFIG.googleAvis) { lienGoogle.href = CONFIG.googleAvis; lienGoogle.hidden = false; }
+
+async function afficherAvis() {
+  let avis;
+  try { avis = await depot.lire(); }
+  catch (e) { console.error(e); liste.innerHTML = '<div class="vide"><b>Avis indisponibles</b>Impossible de charger les avis pour le moment. Réessayez plus tard.</div>'; return; }
   if (!avis.length) {
     liste.innerHTML = '<div class="vide"><b>Aucun avis pour l’instant</b>Soyez le premier à partager votre expérience.</div>';
     return;
@@ -264,21 +282,31 @@ function afficherAvis() {
       <header>
         <span class="pastille" aria-hidden="true">${esc(a.nom.charAt(0).toUpperCase())}</span>
         <span class="qui"><b>${esc(a.nom)}</b><time datetime="${esc(a.date)}">${new Date(a.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</time></span>
-        ${etoiles(a.note)}
+        ${etoiles(Math.min(5, Math.max(1, Math.round(a.note))))}
       </header>
       <p>${esc(a.texte)}</p>
     </article>`).join('');
 }
-formAvis.addEventListener('submit', e => {
+formAvis.addEventListener('submit', async e => {
   e.preventDefault();
   const nom = $('#avis-nom').value.trim(), texte = $('#avis-texte').value.trim();
   const note = Number(new FormData(formAvis).get('note'));
   retour.className = 'erreur';
   if (!note) { retour.textContent = 'Choisissez une note en touchant les étoiles.'; return; }
   if (!nom || !texte) { retour.textContent = 'Indiquez votre nom et votre commentaire.'; return; }
-  stock.ecrire(CLE_AVIS, [{ nom, note, texte, date: new Date().toISOString() }, ...stock.lire(CLE_AVIS, [])]);
+  // Google n'accepte que les avis écrits sur Google : on copie le texte pour qu'il n'y ait plus qu'à le coller.
+  let copie = false;
+  if (CONFIG.googleAvis) { try { await navigator.clipboard.writeText(texte); copie = true; } catch (err) {} }
+  const bouton = $('button[type=submit]', formAvis); bouton.disabled = true;
+  try { await depot.ajouter({ nom, note, texte }); }
+  catch (err) { console.error(err); retour.textContent = 'Votre avis n’a pas pu être enregistré. Vérifiez votre connexion et réessayez.'; return; }
+  finally { bouton.disabled = false; }
   formAvis.reset();
-  retour.className = 'merci'; retour.textContent = 'Merci pour votre avis !';
+  retour.className = 'merci';
+  retour.textContent = !CONFIG.googleAvis ? 'Merci pour votre avis !'
+    : copie ? 'Merci ! Votre commentaire est copié : il ne reste qu’à le coller sur Google.'
+    : 'Merci ! Vous pouvez aussi le publier sur Google.';
+  if (CONFIG.googleAvis) { lienGoogle.textContent = 'Publier aussi sur Google'; lienGoogle.className = 'btn btn-or'; }
   afficherAvis();
 });
 afficherAvis();

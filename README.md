@@ -42,12 +42,23 @@ agrandis par IA : à remplacer par les vraies photos HD quand elles existent.
 ## État actuel — à savoir
 
 - **Téléphone manquant** : la carte « Téléphone » affiche « Bientôt en ligne ».
-- **Les avis ne sont pas encore partagés.** Le site n'a pas de serveur : un avis publié est
-  gardé dans le navigateur du visiteur et n'est visible que sur son appareil
-  (`avisLocaux: true` dans `CONFIG`). Pour des avis publics, il faut brancher une base en ligne.
+- **Les avis ne sont pas encore partagés** tant que Supabase n'est pas branché (voir plus bas) :
+  un avis publié reste dans le navigateur du visiteur.
+- **Avis Google** : Google n'accepte que les avis écrits sur Google par une personne connectée à
+  son compte. Le site ne peut donc pas en publier à sa place : il copie le commentaire et ouvre
+  la page d'avis Google (champ `googleAvis`).
 - **« Ma sélection » n'est pas une commande** : c'est une liste avec un total, à montrer au
   comptoir ou à envoyer. Rien n'arrive au restaurant tant que le WhatsApp n'est pas renseigné.
 - **Textes des incontournables** : rédigés à partir des photos, à valider par le restaurant.
+
+## Brancher la sauvegarde des avis (Supabase)
+
+1. Créer un compte et un projet sur supabase.com (offre gratuite).
+2. **SQL Editor** → coller le contenu de `supabase/avis.sql` → **Run**.
+3. **Project Settings → API** : copier l'URL du projet et la clé publique (`anon` / `publishable`)
+   dans `supabaseUrl` et `supabaseCle` de `js/data.js`. Ne jamais y mettre la clé `service_role`.
+
+Pour masquer un avis : dans Supabase, **Table Editor → avis**, décocher `visible` (ou supprimer la ligne).
 
 ## Technique
 

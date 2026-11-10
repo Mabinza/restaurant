@@ -24,9 +24,10 @@ export const CONFIG = {
   uberEats: '',
   deliveroo: '',
 
-  // true = les avis restent dans le navigateur du visiteur (pas encore de serveur).
-  // À passer à false quand les avis seront enregistrés en ligne.
-  avisLocaux: true,
+  // Sauvegarde des avis en ligne (Supabase). Tant que ces deux champs sont vides,
+  // les avis restent dans le navigateur du visiteur. Voir le README.
+  supabaseUrl: '',        // ex. 'https://abcdefgh.supabase.co'
+  supabaseCle: '',        // clé publique « anon » / « publishable » (jamais la clé « service_role »)
 };
 
 const P = 'assets/img/plats/';
