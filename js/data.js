@@ -18,7 +18,8 @@ export const CONFIG = {
   horaires: ['11:00-22:30', '11:00-22:30', '11:00-22:30', '11:00-22:30', '11:00-22:30', '11:00-22:30', '11:00-22:30'],
 
   // Liens facultatifs (laisser vide pour masquer le bouton).
-  googleAvis: '',         // lien « Laisser un avis » de la fiche Google
+  // Fiche Google du restaurant. Idéalement le lien direct « Demander des avis » (g.page/r/…/review).
+  googleAvis: 'https://share.google/i52Xkj6YjypghcZa3',
   instagram: '',
   tiktok: '',
   uberEats: '',
