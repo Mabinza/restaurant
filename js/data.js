@@ -8,14 +8,14 @@ export const CONFIG = {
 
   // ── Coordonnées : à remplir. Tant qu'un champ est vide, le site le masque
   //    ou affiche « Bientôt en ligne ».
-  adresse: '',            // ex. '12 rue de Dunkerque, 75010 Paris'
+  adresse: '153 rue La Fayette, 75010 Paris',
   telephone: '',          // ex. '01 23 45 67 89'
   whatsapp: '',           // format international sans « + », ex. '33612345678'
 
   // Horaires, du lundi au dimanche (7 lignes). Exemples :
   //   '11:00-23:00'   ·   '11:30-15:00, 18:30-23:00'   ·   'fermé'
   // Laisser le tableau vide tant que les horaires ne sont pas connus.
-  horaires: [],
+  horaires: ['11:00-22:30', '11:00-22:30', '11:00-22:30', '11:00-22:30', '11:00-22:30', '11:00-22:30', '11:00-22:30'],
 
   // Liens facultatifs (laisser vide pour masquer le bouton).
   googleAvis: '',         // lien « Laisser un avis » de la fiche Google
@@ -86,16 +86,6 @@ export const MENU = [
     ],
   },
   {
-    id: 'pizzas', nom: 'Pizzas', titre: 'Nos pizzas',
-    items: [
-      { nom: 'Pizza Margherita', prix: 8, img: P + 'margherita.webp', desc: 'Sauce tomate, mozzarella' },
-      { nom: 'Pizza Végétarienne', prix: 8, img: P + 'vegetarienne.webp', desc: 'Sauce tomate, mozzarella, tomates, champignons, olives, oignons' },
-      { nom: 'Pizza Bollywood', prix: 8, img: P + 'bollywood.webp', desc: 'Sauce tomate, fromage, œuf, poulet tikka, oignons, poivrons' },
-      { nom: 'Pizza 4 fromages', prix: 8, img: P + '4-fromages.webp', desc: 'Sauce tomate, mozzarella, parmesan, provolone, gorgonzola' },
-      { nom: 'Pizza Norvégienne', prix: 8, img: P + 'norvegienne.webp', desc: 'Crème fraîche, saumon, fromage' },
-    ],
-  },
-  {
     id: 'wings', nom: 'Wings & frites', titre: 'Wings & frites',
     items: [
       { nom: '10 wings + frites & boisson 33cl', prix: 8.5, img: P + 'wings-10.webp' },
@@ -131,7 +121,7 @@ export const MENU = [
 // ─────────────────────────────────────────────────────────────
 
 // Plats qui défilent en haut de page (photos détourées uniquement).
-export const DEFILE = ['Karahi poulet tikka + naan', 'Mantou', 'Poisson avec riz', 'Pizza Bollywood',
+export const DEFILE = ['Karahi poulet tikka + naan', 'Mantou', 'Poisson avec riz',
                        '10 wings + frites & boisson 33cl', 'Naan fromage + 4 pièces poulet tikka'];
 
 // Les incontournables. ⚠️ Textes de présentation à valider par le restaurant.

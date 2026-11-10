@@ -288,9 +288,12 @@ const JOURS = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dim
 const plages = txt => (txt.match(/\d{1,2}:\d{2}\s*-\s*\d{1,2}:\d{2}/g) || []).map(p => p.split('-').map(h => { const [a, b] = h.trim().split(':').map(Number); return a * 60 + b; }));
 const joli = txt => plages(txt).length ? txt.replace(/(\d{1,2}):(\d{2})/g, (_, h, m) => `${+h} h${m === '00' ? '' : ' ' + m}`).replace(/\s*-\s*/g, ' – ').replace(/,\s*/g, ' · ') : 'Fermé';
 
+// L'heure du restaurant (Paris), quel que soit le fuseau du visiteur.
+const maintenantParis = () => { try { return new Date(new Date().toLocaleString('en-US', { timeZone: 'Europe/Paris' })); } catch (e) { return new Date(); } };
+
 function etatOuverture() {
   if (CONFIG.horaires.length !== 7) return null;
-  const d = new Date(), j = (d.getDay() + 6) % 7, min = d.getHours() * 60 + d.getMinutes();
+  const d = maintenantParis(), j = (d.getDay() + 6) % 7, min = d.getHours() * 60 + d.getMinutes();
   const auj = plages(CONFIG.horaires[j]), hier = plages(CONFIG.horaires[(j + 6) % 7]);
   const fin = t => `${Math.floor(t / 60)} h${t % 60 ? ' ' + String(t % 60).padStart(2, '0') : ''}`;
   for (const [a, b] of hier) if (b <= a && min < b) return { ouvert: true, texte: `Ouvert · jusqu’à ${fin(b)}` };
@@ -304,8 +307,10 @@ function etatOuverture() {
   const carteMaps = CONFIG.adresse && `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(CONFIG.nom + ' ' + CONFIG.adresse)}`;
   const etat = etatOuverture();
   const aVenir = '<span class="avenir">Bientôt en ligne</span>';
-  const grilleHoraires = CONFIG.horaires.length === 7
-    ? `<table class="horaires">${JOURS.map((jr, k) => `<tr class="${k === (new Date().getDay() + 6) % 7 ? 'auj' : ''}"><th scope="row">${jr}</th><td>${esc(joli(CONFIG.horaires[k]))}</td></tr>`).join('')}</table>`
+  const grilleHoraires = CONFIG.horaires.length === 7 && new Set(CONFIG.horaires).size === 1
+    ? `<p class="tous">Tous les jours<b>${esc(joli(CONFIG.horaires[0]))}</b></p>`
+    : CONFIG.horaires.length === 7
+    ? `<table class="horaires">${JOURS.map((jr, k) => `<tr class="${k === (maintenantParis().getDay() + 6) % 7 ? 'auj' : ''}"><th scope="row">${jr}</th><td>${esc(joli(CONFIG.horaires[k]))}</td></tr>`).join('')}</table>`
     : aVenir;
   const ICONES = {
     lieu: 'M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21Zm0-9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z',
@@ -313,7 +318,7 @@ function etatOuverture() {
     tel: 'M6 3h4l1.5 5L9 9.5a12 12 0 0 0 5.5 5.5l1.500-2.500 5 1.500v4a2 2 0 0 1-2 2A16 16 0 0 1 4 5a2 2 0 0 1 2-2Z',
   };
   const cartes = [
-    [ICONES.lieu, 'Adresse', CONFIG.adresse ? esc(CONFIG.adresse) : aVenir, carteMaps && `<a class="btn btn-ligne petit" target="_blank" rel="noopener" href="${carteMaps}">Itinéraire</a>`],
+    [ICONES.lieu, 'Adresse', CONFIG.adresse ? esc(CONFIG.adresse).replace(/,\s*/, '<br>') : aVenir, carteMaps && `<a class="btn btn-ligne petit" target="_blank" rel="noopener" href="${carteMaps}">Itinéraire</a>`],
     [ICONES.heure, 'Horaires', (etat ? `<span class="etat ${etat.ouvert ? 'oui' : 'non'}">${esc(etat.texte)}</span>` : '') + grilleHoraires],
     [ICONES.tel, 'Téléphone', CONFIG.telephone ? esc(CONFIG.telephone) : aVenir, tel && `<a class="btn btn-or petit" href="tel:${tel}">Appeler</a>`],
   ];
@@ -331,7 +336,7 @@ function etatOuverture() {
 
   // Données structurées pour Google (fiche restaurant + carte).
   const ld = {
-    '@context': 'https://schema.org', '@type': 'Restaurant', name: CONFIG.nom, servesCuisine: ['Afghane', 'Halal', 'Pizza'],
+    '@context': 'https://schema.org', '@type': 'Restaurant', name: CONFIG.nom, servesCuisine: ['Afghane', 'Halal'],
     priceRange: '€', image: new URL('assets/img/partage.jpg', location.href).href, url: location.origin + location.pathname,
     ...(CONFIG.adresse && { address: CONFIG.adresse }), ...(CONFIG.telephone && { telephone: CONFIG.telephone }),
     hasMenu: { '@type': 'Menu', hasMenuSection: MENU.map(c => ({ '@type': 'MenuSection', name: c.titre, hasMenuItem: c.items.map(it => ({ '@type': 'MenuItem', name: it.nom, ...(it.desc && { description: it.desc }), offers: { '@type': 'Offer', price: it.prix.toFixed(2), priceCurrency: 'EUR' } })) })) },

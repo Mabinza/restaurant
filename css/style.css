@@ -179,7 +179,7 @@ h2 { font: 600 clamp(1.9rem, 5vw, 3.3rem)/1.1 var(--titre); letter-spacing: .06e
 .carte { background: var(--motif), linear-gradient(180deg, var(--nuit), var(--bordeaux-profond) 12%, var(--bordeaux-profond) 88%, var(--nuit)); }
 .recherche { position: relative; display: block; max-width: 460px; margin: 24px auto 0; }
 .recherche .ic { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--or); pointer-events: none; }
-.recherche input { height: 54px; padding-left: 50px; border-radius: 999px; }
+.recherche input:not([type=radio]) { height: 54px; padding-left: 50px; border-radius: 999px; }
 .onglets { position: sticky; top: var(--barre-h); z-index: 5; display: flex; gap: 8px; overflow-x: auto; padding: 10px 16px; margin: 0 calc(-1 * var(--bord)); scrollbar-width: none; background: rgba(40, 9, 15, .94); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-block: 1px solid var(--trait); }
 .onglets::-webkit-scrollbar { display: none; }
 .onglets::before, .onglets::after { content: ''; flex: 1 0 0; }
@@ -285,6 +285,7 @@ legend { padding: 0; margin-bottom: 6px; font-size: .76rem; font-weight: 600; le
 .info .corps { flex: 1; width: 100%; }
 .avenir { color: var(--creme-douce); font-style: italic; }
 .etat { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 10px; font-weight: 600; font-size: .92rem; }
+.tous b { display: block; margin-top: 2px; font: 600 1.35rem var(--texte); color: var(--creme); font-variant-numeric: tabular-nums; }
 .horaires { width: 100%; border-collapse: collapse; font-size: .92rem; }
 .horaires th { text-align: left; font-weight: 400; color: var(--creme-douce); padding: 3px 0; }
 .horaires td { text-align: right; font-variant-numeric: tabular-nums; padding: 3px 0; }

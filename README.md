@@ -36,12 +36,12 @@ Dès qu'un champ de `CONFIG` est rempli, le site s'adapte tout seul : bouton « 
 itinéraire et plan Google Maps, tableau des horaires avec l'indication « Ouvert / Fermé »,
 envoi de la sélection par WhatsApp, liens vers les réseaux.
 
-Les photos en `.webp` sont détourées (fond transparent) ; celles en `.jpg` viennent
-du menu PDF et sont à remplacer par les photos en haute définition.
+Les photos en `.webp` sont détourées (fond transparent). Celles en `.jpg` viennent du menu PDF
+et ont été agrandies par IA pour être nettes : à remplacer par les vraies photos HD quand elles existent.
 
 ## État actuel — à savoir
 
-- **Coordonnées vides** : adresse, horaires et téléphone affichent « Bientôt en ligne ».
+- **Téléphone manquant** : la carte « Téléphone » affiche « Bientôt en ligne ».
 - **Les avis ne sont pas encore partagés.** Le site n'a pas de serveur : un avis publié est
   gardé dans le navigateur du visiteur et n'est visible que sur son appareil
   (`avisLocaux: true` dans `CONFIG`). Pour des avis publics, il faut brancher une base en ligne.
