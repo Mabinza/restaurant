@@ -1,4 +1,4 @@
-import { CONFIG, MENU, DEFILE, VEDETTES, BONS_PLANS } from './data.js';
+import { CONFIG, MENU, DEFILE, VEDETTES, BONS_PLANS } from './data.js?v=202611101546';
 
 // ───────── utilitaires ─────────
 const $ = (s, r = document) => r.querySelector(s);

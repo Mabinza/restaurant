@@ -54,3 +54,9 @@ agrandis par IA : à remplacer par les vraies photos HD quand elles existent.
 HTML / CSS / JavaScript sans étape de build ni dépendance. Le site fournit aussi les
 balises de partage (aperçu sur WhatsApp, Instagram…) et les données structurées
 schema.org pour Google (restaurant + carte).
+
+### Après une modification
+
+Les navigateurs gardent le site en mémoire. Après avoir changé `js/data.js`, `js/app.js` ou
+`css/style.css`, changer le numéro `?v=…` (le même partout) dans `index.html` et en haut de
+`js/app.js`, sinon les visiteurs peuvent voir l'ancienne version.
