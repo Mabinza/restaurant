@@ -112,7 +112,7 @@ export const MENU = [
       { nom: 'Thé, café', prix: 1.5, img: P + 'the-cafe.webp' },
       { nom: 'Boissons 33cl', prix: 1.5, img: P + 'boissons-33cl.webp', desc: 'Coca, Fanta…' },
       { nom: 'Boissons 1,5L', prix: 3, img: P + 'boissons-15l.webp', desc: 'Coca, Fanta…' },
-      { nom: 'Bouteille d’eau 50cl', prix: 1 },
+      { nom: 'Bouteille d’eau 50cl', prix: 1, img: P + 'eau-15l.webp' },
       { nom: 'Bouteille d’eau 1,5L', prix: 2, img: P + 'eau-15l.webp' },
     ],
   },
