@@ -36,9 +36,9 @@ export const MENU = [
     id: 'specialites', nom: 'Spécialités', titre: 'Les plats',
     items: [
       { nom: 'Assiette mixte', prix: 14, img: P + 'assiette-mixte.webp', badge: 'Notre spécialité' },
-      { nom: 'Kabuli palaw', prix: 10, img: P + 'kabuli-palaw.jpg' },
+      { nom: 'Kabuli palaw', prix: 10, img: P + 'kabuli-palaw.webp' },
       { nom: 'Mantou', prix: 10, img: P + 'mantou.webp' },
-      { nom: 'Biryani', prix: 8, img: P + 'biryani.jpg' },
+      { nom: 'Biryani', prix: 8, img: P + 'biryani.webp' },
       { nom: 'Assiette poulet kebab', prix: 9, img: P + 'assiette-poulet-kebab.webp' },
       { nom: 'Chapli kebab + 2 naans nature & boisson 33cl', prix: 10, img: P + 'chapli-kebab.webp' },
       { nom: 'Poisson avec riz', prix: 9, img: P + 'poisson.webp' },
@@ -107,7 +107,7 @@ export const MENU = [
     id: 'boissons', nom: 'Boissons', titre: 'Les boissons',
     items: [
       { nom: 'Lassi mangue', prix: 3, img: P + 'lassi.jpg' },
-      { nom: 'Thé, café', prix: 1.5 },
+      { nom: 'Thé, café', prix: 1.5, img: P + 'the-cafe.webp' },
       { nom: 'Boissons 33cl', prix: 1.5, img: P + 'boissons-33cl.webp', desc: 'Coca, Fanta…' },
       { nom: 'Boissons 1,5L', prix: 3, img: P + 'boissons-15l.webp', desc: 'Coca, Fanta…' },
       { nom: 'Bouteille d’eau 50cl', prix: 1 },
@@ -121,13 +121,13 @@ export const MENU = [
 // ─────────────────────────────────────────────────────────────
 
 // Plats qui défilent en haut de page (photos détourées uniquement).
-export const DEFILE = ['Karahi poulet tikka + naan', 'Assiette mixte', 'Mantou', 'Poisson avec riz',
+export const DEFILE = ['Karahi poulet tikka + naan', 'Kabuli palaw', 'Assiette mixte', 'Mantou', 'Poisson avec riz',
                        '10 wings + frites & boisson 33cl', 'Naan fromage + 4 pièces poulet tikka'];
 
 // Les incontournables. ⚠️ Textes de présentation à valider par le restaurant.
 export const VEDETTES = [
   {
-    plat: 'Kabuli palaw', img: 'assets/img/kabuli-couverture.jpg', cadre: true, sur: 'Le plat national afghan',
+    plat: 'Kabuli palaw', sur: 'Le plat national afghan',
     texte: 'Un riz basmati parfumé, des carottes fondantes, des raisins secs et de généreux morceaux de viande. S’il ne fallait en goûter qu’un, ce serait celui-là.',
   },
   {
