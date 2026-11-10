@@ -199,6 +199,7 @@ h2 { font: 600 clamp(1.9rem, 5vw, 3.3rem)/1.1 var(--titre); letter-spacing: .06e
 .visuel img { position: absolute; inset: 0; width: 100%; height: 100%; transition: transform .5s cubic-bezier(.2, .8, .2, 1); }
 .detoure .visuel img { object-fit: contain; filter: drop-shadow(0 16px 16px rgba(0, 0, 0, .5)); }
 .detoure:hover .visuel img { transform: scale(1.08) rotate(-3deg); }
+.sans-photo .visuel img { object-fit: contain; padding: 14%; opacity: .28; }
 .photo .visuel { overflow: hidden; }
 .photo .visuel img { object-fit: cover; }
 .photo:hover .visuel img { transform: scale(1.07); }

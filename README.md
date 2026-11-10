@@ -36,8 +36,8 @@ Dès qu'un champ de `CONFIG` est rempli, le site s'adapte tout seul : bouton « 
 itinéraire et plan Google Maps, tableau des horaires avec l'indication « Ouvert / Fermé »,
 envoi de la sélection par WhatsApp, liens vers les réseaux.
 
-Les photos en `.webp` sont détourées (fond transparent). Celles en `.jpg` viennent du menu PDF
-et ont été agrandies par IA pour être nettes : à remplacer par les vraies photos HD quand elles existent.
+Les photos en `.webp` sont détourées (fond transparent). Les quelques `.jpg` restants viennent du menu PDF,
+agrandis par IA : à remplacer par les vraies photos HD quand elles existent.
 
 ## État actuel — à savoir
 

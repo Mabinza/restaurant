@@ -55,7 +55,7 @@ $('#annee').textContent = new Date().getFullYear();
 
 // ───────── ruban ─────────
 {
-  const noms = MENU.filter(c => !c.liste).flatMap(c => c.items.map(it => it.nom.replace(/ \+.*$| \(.*$| \/.*$/g, '')));
+  const noms = MENU.filter(c => c.id !== 'boissons').flatMap(c => c.items.map(it => it.nom.replace(/ \+.*$| \(.*$| \/.*$/g, '')));
   const uniques = [...new Set(noms)].filter(n => n.length < 22 && !/^\d/.test(n));
   const bloc = uniques.map(n => `<span>${esc(n)}</span><i>✦</i>`).join('');
   $('#ruban').innerHTML = bloc + bloc;
@@ -198,9 +198,9 @@ MENU.forEach(cat => {
   } else {
     const grille = el('div', 'en-grille');
     cat.items.forEach(it => {
-      const c = el('article', 'plat rv ' + (detoure(it) ? 'detoure' : 'photo'), `
+      const c = el('article', 'plat rv ' + (!it.img ? 'sans-photo' : detoure(it) ? 'detoure' : 'photo'), `
         <button class="ouvrir" type="button" aria-label="Voir ${esc(it.nom)}">
-          <span class="visuel"><img src="${it.img}" alt="" loading="lazy"></span>
+          <span class="visuel"><img src="${it.img || 'assets/img/tour.svg'}" alt="" loading="lazy"></span>
           ${it.badge ? `<span class="badge">${esc(it.badge)}</span>` : ''}
           <span class="nom">${esc(it.nom)}</span>
           ${it.desc ? `<span class="desc">${esc(it.desc)}</span>` : ''}
