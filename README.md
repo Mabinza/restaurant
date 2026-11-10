@@ -9,6 +9,11 @@ Site vitrine du restaurant, pensé d'abord pour le téléphone :
 - **Ma sélection** : le client compose sa liste, voit le total et peut la partager
 - **Avis** des clients et **infos pratiques** (adresse, horaires, téléphone, plan)
 
+## En ligne
+
+https://kaboulparisnord.netlify.app — Netlify publie automatiquement la branche à chaque modification.
+Si l'adresse change (nom de domaine), la mettre à jour dans les balises `og:` et `canonical` de `index.html`.
+
 ## Lancer le site en local
 
 Le site est 100 % statique (aucune installation). Il faut juste un petit serveur web :
