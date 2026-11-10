@@ -304,7 +304,7 @@ footer a { text-decoration: none; letter-spacing: .1em; text-transform: uppercas
 footer a:hover { color: var(--or-clair); }
 .reseaux:empty { display: none; }
 .reseaux a { padding: .5em 1.1em; border: 1px solid var(--trait); border-radius: 999px; color: var(--or-clair); }
-.petit-texte { font-size: .76rem; opacity: .7; }
+.petit-texte { font-size: .76rem; opacity: .7; max-width: 46em; text-wrap: balance; }
 
 /* ───────── barre d'actions (téléphone) ───────── */
 .dock { display: none; }

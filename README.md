@@ -79,3 +79,7 @@ schema.org pour Google (restaurant + carte).
 Les navigateurs gardent le site en mémoire. Après avoir changé `js/data.js`, `js/app.js` ou
 `css/style.css`, changer le numéro `?v=…` (le même partout) dans `index.html` et en haut de
 `js/app.js`, sinon les visiteurs peuvent voir l'ancienne version.
+
+## Droits
+
+© Kaboul Paris Nord. Tous droits réservés — voir `LICENSE`.
