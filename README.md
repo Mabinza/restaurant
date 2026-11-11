@@ -82,6 +82,16 @@ Les avis sont dans la table `avis` du projet Supabase « kaboul-paris-nord » (s
 
 Pour masquer un avis : dans Supabase, **Table Editor → avis**, décocher `visible` (ou supprimer la ligne).
 
+## Rapidité
+
+- `assets/img/plats/s/` contient une version allégée (480 px) de chaque photo, utilisée dans les cartes.
+  La grande version sert pour l'accueil et la fiche du plat. **Quand on ajoute ou remplace une photo,
+  il faut aussi créer sa petite version** (même nom, en `.webp`).
+- Les polices sont dans `assets/polices/` (plus d'appel à Google Fonts).
+- `sw.js` garde photos et polices dans le navigateur du visiteur : à la deuxième visite elles
+  s'affichent tout de suite, puis sont rafraîchies en arrière-plan. Une photo remplacée apparaît donc
+  à la visite suivante. Pages, scripts et styles sont toujours redemandés au serveur.
+
 ## Technique
 
 HTML / CSS / JavaScript sans étape de build ni dépendance. Le site fournit aussi les

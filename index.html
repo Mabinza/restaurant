@@ -27,11 +27,10 @@ try { var l = new URLSearchParams(location.search).get('lang') || localStorage.g
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="assets/img/icone-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preload" as="font" type="font/woff2" href="assets/polices/jost.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="assets/polices/cinzel.woff2" crossorigin>
 <link rel="preload" as="image" href="assets/img/plats/kabuli-palaw.webp">
-<link rel="stylesheet" href="css/style.css?v=202611111810">
+<link rel="stylesheet" href="css/style.css?v=202611111823">
 </head>
 <body>
 <a class="evitement" href="#carte">Aller à la carte</a>
@@ -213,6 +212,6 @@ try { var l = new URLSearchParams(location.search).get('lang') || localStorage.g
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <noscript><p class="sans-js">Activez JavaScript pour afficher la carte du restaurant.</p></noscript>
-<script type="module" src="js/app.js?v=202611111810"></script>
+<script type="module" src="js/app.js?v=202611111823"></script>
 </body>
 </html>

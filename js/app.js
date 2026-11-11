@@ -1,5 +1,5 @@
-import { CONFIG, MENU, DEFILE, VEDETTES, BONS_PLANS } from './data.js?v=202611111810';
-import { LANGUE, CHOISIE, GLOSES, traduire, choisirLangue, installerLangue, pret } from './langue.js?v=202611111810';
+import { CONFIG, MENU, DEFILE, VEDETTES, BONS_PLANS } from './data.js?v=202611111823';
+import { LANGUE, CHOISIE, GLOSES, traduire, choisirLangue, installerLangue, pret } from './langue.js?v=202611111823';
 
 // ───────── utilitaires ─────────
 const $ = (s, r = document) => r.querySelector(s);
@@ -23,6 +23,8 @@ const parNom = nom => PLATS.get(slug(nom));
 if (LANGUE === 'en') PLATS.forEach(it => { if (!it.desc && GLOSES[it.nom]) it.desc = GLOSES[it.nom]; });
 installerLangue();
 const detoure = it => it.img?.endsWith('.webp');
+// Version allégée de la photo (cartes, listes) ; la grande sert pour l'accueil et la fiche du plat.
+const petite = it => it.img.replace('/plats/', '/plats/s/').replace(/\.\w+$/, '.webp');
 
 let toastFin;
 function toast(msg) {
@@ -97,7 +99,7 @@ VEDETTES.forEach((v, n) => {
 // ───────── bons plans ─────────
 BONS_PLANS.map(parNom).filter(Boolean).forEach(it => {
   const c = el('button', 'plan-carte ' + (detoure(it) ? 'detoure' : 'photo'), `
-    <span class="visuel"><img src="${it.img}" alt="" loading="lazy"></span>
+    <span class="visuel"><img src="${petite(it)}" alt="" loading="lazy" decoding="async"></span>
     <span class="nom">${esc(it.nom)}</span>
     <span class="prix">${prix(it.prix)}</span>`);
   c.type = 'button'; c.onclick = () => ouvrirFiche(it);
@@ -140,7 +142,7 @@ function dessinerTiroir() {
     ${lignes.length ? `
     <ul class="lignes">${lignes.map(([id, q]) => { const it = PLATS.get(id); return `
       <li>
-        ${it.img ? `<img class="${detoure(it) ? 'detoure' : 'photo'}" src="${it.img}" alt="">` : '<span class="sans-img">✦</span>'}
+        ${it.img ? `<img class="${detoure(it) ? 'detoure' : 'photo'}" src="${petite(it)}" alt="">` : '<span class="sans-img">✦</span>'}
         <span class="quoi"><b>${esc(it.nom)}</b><small>${prix(it.prix)}</small></span>
         <span class="qte"><button data-id="${id}" data-d="-1" aria-label="Un de moins">−</button><output>${q}</output><button data-id="${id}" data-d="1" aria-label="Un de plus">+</button></span>
       </li>`; }).join('')}</ul>
@@ -212,7 +214,7 @@ MENU.forEach(cat => {
     cat.items.forEach(it => {
       const c = el('article', 'plat ' + (!it.img ? 'sans-photo' : detoure(it) ? 'detoure' : 'photo'), `
         <button class="ouvrir" type="button" aria-label="Voir ${esc(it.nom)}">
-          <span class="visuel"><img src="${it.img || 'assets/img/tour.svg'}" alt="" loading="lazy" decoding="async"></span>
+          <span class="visuel"><img src="${it.img ? petite(it) : 'assets/img/tour.svg'}" alt="" loading="lazy" decoding="async"></span>
           ${it.badge ? `<span class="badge">${esc(it.badge)}</span>` : ''}
           <span class="nom">${esc(it.nom)}</span>
           ${it.desc ? `<span class="desc">${esc(it.desc)}</span>` : ''}
@@ -435,3 +437,6 @@ else {
 
 majSelection();
 pret();
+
+// Mise en cache des photos et des polices (voir sw.js).
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) navigator.serviceWorker.register('sw.js').catch(() => {});

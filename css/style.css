@@ -1,4 +1,7 @@
 /* Kaboul Paris Nord — bordeaux RAL 3004, or, crème */
+@font-face { font-family: 'Cinzel'; font-style: normal; font-weight: 500 700; font-display: swap; src: url('../assets/polices/cinzel.woff2') format('woff2'); }
+@font-face { font-family: 'Jost'; font-style: normal; font-weight: 400 700; font-display: swap; src: url('../assets/polices/jost.woff2') format('woff2'); }
+
 :root {
   --nuit: #1d070b;
   --bordeaux-profond: #3a0d15;
