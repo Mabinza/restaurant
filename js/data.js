@@ -22,6 +22,9 @@ export const CONFIG = {
   telephone: '',          // ex. '01 23 45 67 89'
   whatsapp: '',           // format international sans « + », ex. '33612345678'
 
+  // Livraison proposée ? (false = le site indique « Pas de livraison pour le moment »)
+  livraison: false,
+
   // Horaires, du lundi au dimanche (7 lignes). Exemples :
   //   '11:00-23:00'   ·   '11:30-15:00, 18:30-23:00'   ·   'fermé'
   // Laisser le tableau vide tant que les horaires ne sont pas connus.

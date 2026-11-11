@@ -50,6 +50,20 @@ envoi de la sélection par WhatsApp, liens vers les réseaux.
 Les photos en `.webp` sont détourées (fond transparent). Les quelques `.jpg` restants viennent du menu PDF,
 agrandis par IA : à remplacer par les vraies photos HD quand elles existent.
 
+## Langues
+
+Le site est écrit en français. La version anglaise est produite par `js/langue.js` : un dictionnaire
+(texte français → texte anglais) appliqué à la page. Pour corriger ou ajouter une traduction, modifier
+ce fichier ; un texte absent du dictionnaire reste affiché en français. Un plat ajouté dans `MENU`
+doit donc aussi y recevoir sa traduction. À la première visite, une bulle de bienvenue propose de
+choisir la langue ; le bouton FR / EN en haut de page permet d'en changer ensuite.
+
+## Affichette QR code
+
+`impression/affichette-qr.pdf` : page 1, une affiche A4 pour la vitrine ; page 2, quatre cartes à
+découper pour les tables. Le QR code pointe vers l'adresse du site : si elle change, il faut le
+régénérer et réimprimer.
+
 ## État actuel — à savoir
 
 - **Téléphone manquant** : la carte « Téléphone » affiche « Bientôt en ligne ».

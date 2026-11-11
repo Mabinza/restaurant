@@ -1,4 +1,5 @@
-import { CONFIG, MENU, DEFILE, VEDETTES, BONS_PLANS } from './data.js?v=202611111642';
+import { CONFIG, MENU, DEFILE, VEDETTES, BONS_PLANS } from './data.js?v=202611111758';
+import { LANGUE, CHOISIE, GLOSES, traduire, choisirLangue, installerLangue, pret } from './langue.js?v=202611111758';
 
 // ───────── utilitaires ─────────
 const $ = (s, r = document) => r.querySelector(s);
@@ -18,6 +19,9 @@ const calme = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const PLATS = new Map();
 MENU.forEach(cat => cat.items.forEach(it => { it.id = slug(it.nom); it.cat = cat; PLATS.set(it.id, it); }));
 const parNom = nom => PLATS.get(slug(nom));
+// En anglais, une courte explication accompagne les plats peu connus.
+if (LANGUE === 'en') PLATS.forEach(it => { if (!it.desc && GLOSES[it.nom]) it.desc = GLOSES[it.nom]; });
+installerLangue();
 const detoure = it => it.img?.endsWith('.webp');
 
 let toastFin;
@@ -198,7 +202,7 @@ MENU.forEach(cat => {
     const ul = el('ul', 'liste');
     cat.items.forEach(it => {
       const li = el('li', 'ligne', `<span class="n">${esc(it.nom)}${it.desc ? `<small>${esc(it.desc)}</small>` : ''}</span><span class="pts"></span><span class="p">${prix(it.prix)}</span>${boutonPlus(it)}`);
-      li.dataset.q = sansAccent(it.nom + ' ' + (it.desc || '') + ' ' + cat.nom);
+      li.dataset.q = sansAccent([it.nom, it.desc || '', cat.nom, traduire(it.nom), traduire(cat.nom)].join(' '));
       ul.append(li);
     });
     bloc.append(ul, el('div', 'liste-photo rv', `<img src="${cat.photo}" alt="${esc(cat.titre)}" loading="lazy">`));
@@ -214,7 +218,7 @@ MENU.forEach(cat => {
           ${it.desc ? `<span class="desc">${esc(it.desc)}</span>` : ''}
         </button>
         <div class="bas"><span class="prix">${prix(it.prix)}</span>${boutonPlus(it)}</div>`);
-      c.dataset.q = sansAccent(it.nom + ' ' + (it.desc || '') + ' ' + cat.nom);
+      c.dataset.q = sansAccent([it.nom, it.desc || '', cat.nom, traduire(it.nom), traduire(cat.nom)].join(' '));
       $('.ouvrir', c).onclick = () => ouvrirFiche(it);
       grille.append(c);
     });
@@ -274,7 +278,7 @@ const depot = {
     : Promise.resolve(stock.ecrire(CLE_AVIS, [{ ...avis, date: new Date().toISOString() }, ...stock.lire(CLE_AVIS, [])])),
 };
 
-const etoiles = n => `<span class="stars" role="img" aria-label="${n} sur 5">${'★'.repeat(n)}<i>${'★'.repeat(5 - n)}</i></span>`;
+const etoiles = n => `<span class="stars" role="img" aria-label="${n} / 5">${'★'.repeat(n)}<i>${'★'.repeat(5 - n)}</i></span>`;
 const liste = $('#avis-liste'), formAvis = $('#avis-form'), retour = $('#avis-retour'), lienGoogle = $('#avis-google');
 $('#avis-note').hidden = enLigne;
 if (CONFIG.googleAvis) { lienGoogle.href = CONFIG.googleAvis; lienGoogle.hidden = false; }
@@ -293,7 +297,7 @@ async function afficherAvis() {
     <article class="un-avis">
       <header>
         <span class="pastille" aria-hidden="true">${esc(a.nom.charAt(0).toUpperCase())}</span>
-        <span class="qui"><b>${esc(a.nom)}</b><time datetime="${esc(a.date)}">${new Date(a.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</time></span>
+        <span class="qui"><b>${esc(a.nom)}</b><time datetime="${esc(a.date)}">${new Date(a.date).toLocaleDateString(LANGUE === 'en' ? 'en-GB' : 'fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}</time></span>
         ${etoiles(Math.min(5, Math.max(1, Math.round(a.note))))}
       </header>
       <p>${esc(a.texte)}</p>
@@ -355,11 +359,13 @@ function etatOuverture() {
   const ICONES = {
     lieu: 'M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21Zm0-9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z',
     heure: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Zm0 4v5l3.5 2',
+    sac: 'M6 8h12l-1 12H7L6 8Zm3 0V7a3 3 0 0 1 6 0v1',
     tel: 'M6 3h4l1.5 5L9 9.5a12 12 0 0 0 5.5 5.5l1.500-2.500 5 1.500v4a2 2 0 0 1-2 2A16 16 0 0 1 4 5a2 2 0 0 1 2-2Z',
   };
   const cartes = [
     [ICONES.lieu, 'Adresse', CONFIG.adresse ? esc(CONFIG.adresse).replace(/,\s*/, '<br>') : aVenir, carteMaps && `<a class="btn btn-ligne petit" target="_blank" rel="noopener" href="${carteMaps}">Itinéraire</a>`],
     [ICONES.heure, 'Horaires', (etat ? `<span class="etat ${etat.ouvert ? 'oui' : 'non'}">${esc(etat.texte)}</span>` : '') + grilleHoraires],
+    [ICONES.sac, 'Sur place ou à emporter', `Mangez sur place ou emportez votre commande.${CONFIG.livraison ? '' : '<br><span class="avenir">Pas de livraison pour le moment.</span>'}`],
     [ICONES.tel, 'Téléphone', CONFIG.telephone ? esc(CONFIG.telephone) : aVenir, tel && `<a class="btn btn-or petit" href="tel:${tel}">Appeler</a>`],
   ];
   cartes.forEach(([icone, titre, corps, action]) => $('#cartes-infos').append(el('div', 'info rv', `<svg class="ic grand" viewBox="0 0 24 24" aria-hidden="true"><path d="${icone}"/></svg><h3>${titre}</h3><div class="corps">${corps}</div>${action || ''}`)));
@@ -409,6 +415,17 @@ function etatOuverture() {
   $('#ouvre-mentions').onclick = () => m.showModal();
 }
 
+// ───────── langue ─────────
+{
+  const autre = LANGUE === 'en' ? 'fr' : 'en';
+  $$('.change-langue').forEach(b => { b.textContent = autre.toUpperCase(); b.setAttribute('aria-label', autre === 'en' ? 'English version' : 'Version française'); b.onclick = () => choisirLangue(autre); });
+  // Première visite : on souhaite la bienvenue et on laisse choisir la langue.
+  const bulle = $('#bienvenue');
+  $$('button[data-langue]', bulle).forEach(b => b.onclick = () => { if (!choisirLangue(b.dataset.langue)) bulle.close(); });
+  bulle.addEventListener('close', () => { if (!CHOISIE) try { localStorage.getItem('kpn-langue') || localStorage.setItem('kpn-langue', LANGUE); } catch (e) {} });
+  if (!CHOISIE) bulle.showModal();
+}
+
 // ───────── apparition au défilement ─────────
 if (calme || !('IntersectionObserver' in window)) $$('.rv').forEach(e => e.classList.add('vu'));
 else {
@@ -417,3 +434,4 @@ else {
 }
 
 majSelection();
+pret();

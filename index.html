@@ -19,6 +19,11 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://kaboulparisnord.onrender.com/">
+<script>
+// Langue choisie : en anglais, la page attend la traduction avant de s'afficher.
+try { var l = new URLSearchParams(location.search).get('lang') || localStorage.getItem('kpn-langue') || ((navigator.language || 'fr').slice(0, 2) === 'fr' ? 'fr' : 'en');
+  if (l === 'en') { document.documentElement.lang = 'en'; document.documentElement.classList.add('attente'); setTimeout(function () { document.documentElement.classList.remove('attente'); }, 2500); } } catch (e) {}
+</script>
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="assets/img/icone-180.png">
 <link rel="manifest" href="manifest.webmanifest">
@@ -26,7 +31,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="assets/img/plats/kabuli-palaw.webp">
-<link rel="stylesheet" href="css/style.css?v=202611111642">
+<link rel="stylesheet" href="css/style.css?v=202611111758">
 </head>
 <body>
 <a class="evitement" href="#carte">Aller à la carte</a>
@@ -43,6 +48,7 @@
     <a href="#infos">Infos</a>
   </nav>
   <span class="ouvert" id="ouvert-barre" hidden></span>
+  <button class="change-langue" type="button">EN</button>
   <button class="btn btn-or petit ouvre-selection" type="button">
     <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8h12l-1 12H7L6 8Z"/><path d="M9 8V7a3 3 0 0 1 6 0v1"/></svg>
     Ma sélection <b class="compte" hidden>0</b>
@@ -62,6 +68,7 @@
       <p class="farsi" lang="fa" dir="rtl">کابل پاریس رستورانت</p>
       <h1>Cuisine afghane <span>•</span> saveurs parisiennes</h1>
       <p class="accroche">Kabuli palaw, mantou, karahi, grillades et naans sortis du four.</p>
+      <p class="modes"><span>Sur place</span><span>À emporter</span></p>
       <div class="actions">
         <a class="btn btn-or" href="#carte">Voir la carte</a>
         <a class="btn btn-ligne" href="#infos">Nous trouver</a>
@@ -180,7 +187,7 @@
   </nav>
   <p class="petit-texte" id="droits">© Kaboul Paris Nord · Tous droits réservés</p>
   <p class="petit-texte">Le logo, les textes, les photos et le contenu de ce site ne peuvent pas être copiés ni réutilisés sans autorisation écrite.</p>
-  <button class="lien-discret" id="ouvre-mentions" type="button">Mentions légales</button>
+  <p class="pied-liens"><button class="lien-discret" id="ouvre-mentions" type="button">Mentions légales</button><button class="lien-discret change-langue" type="button">EN</button></p>
 </footer>
 
 <!-- barre d'actions (téléphone) -->
@@ -191,12 +198,21 @@
   <button type="button" class="ouvre-selection"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8h12l-1 12H7L6 8Z"/><path d="M9 8V7a3 3 0 0 1 6 0v1"/></svg>Sélection<b class="compte" hidden>0</b></button>
 </nav>
 
+<dialog id="bienvenue" class="fiche bienvenue" aria-labelledby="bienvenue-titre">
+  <img src="assets/img/tour.svg" alt="" width="64" height="100">
+  <h3 id="bienvenue-titre">Bienvenue <span>·</span> Welcome</h3>
+  <p class="desc">Choisissez votre langue<br>Choose your language</p>
+  <div class="langues">
+    <button class="btn btn-or" type="button" data-langue="fr">Français</button>
+    <button class="btn btn-or" type="button" data-langue="en">English</button>
+  </div>
+</dialog>
 <dialog id="fiche" class="fiche"></dialog>
 <dialog id="mentions" class="mentions" aria-label="Mentions légales"></dialog>
 <dialog id="selection" class="tiroir" aria-labelledby="selection-titre"></dialog>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <noscript><p class="sans-js">Activez JavaScript pour afficher la carte du restaurant.</p></noscript>
-<script type="module" src="js/app.js?v=202611111642"></script>
+<script type="module" src="js/app.js?v=202611111758"></script>
 </body>
 </html>
