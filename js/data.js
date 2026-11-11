@@ -9,10 +9,11 @@ export const CONFIG = {
   // Société qui exploite le restaurant (mentions légales).
   societe: {
     nom: 'SAS Amin Jan',
+    forme: 'Société par actions simplifiée au capital de 1 000 €',
+    siret: '108 643 503 00015',
     tva: 'FR45 108 643 503',
-    siren: '108 643 503',   // déduit du numéro de TVA
-    siret: '',              // à compléter (14 chiffres)
-    responsable: '',        // responsable de la publication, à compléter
+    registre: 'Immatriculée au Registre national des entreprises',
+    responsable: 'Gholam Rasool Zarif Khail, président',   // responsable de la publication
     hebergeur: 'Render Services, Inc. — 525 Brannan Street, Suite 300, San Francisco, CA 94107, États-Unis — render.com',
   },
 

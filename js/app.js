@@ -1,5 +1,5 @@
-import { CONFIG, MENU, DEFILE, VEDETTES, BONS_PLANS } from './data.js?v=202611111758';
-import { LANGUE, CHOISIE, GLOSES, traduire, choisirLangue, installerLangue, pret } from './langue.js?v=202611111758';
+import { CONFIG, MENU, DEFILE, VEDETTES, BONS_PLANS } from './data.js?v=202611111810';
+import { LANGUE, CHOISIE, GLOSES, traduire, choisirLangue, installerLangue, pret } from './langue.js?v=202611111810';
 
 // ───────── utilitaires ─────────
 const $ = (s, r = document) => r.querySelector(s);
@@ -398,8 +398,8 @@ function etatOuverture() {
     <button class="fermer" aria-label="Fermer">✕</button>
     <h3>Mentions légales</h3>
     <h4>Éditeur du site</h4>
-    <p>${esc(s.nom)}<br>${esc(CONFIG.adresse)}<br>
-      ${s.siret ? `SIRET : ${esc(s.siret)}<br>` : s.siren ? `SIREN : ${esc(s.siren)}<br>` : ''}
+    <p>${esc(s.nom)}<br>${esc(s.forme)}<br>${esc(CONFIG.adresse)}<br>
+      SIRET : ${esc(s.siret)}<br>${esc(s.registre)}<br>
       N° de TVA intracommunautaire : ${esc(s.tva)}
       ${s.responsable ? `<br>Responsable de la publication : ${esc(s.responsable)}` : ''}
       ${CONFIG.telephone ? `<br>Téléphone : ${esc(CONFIG.telephone)}` : ''}</p>
