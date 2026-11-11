@@ -25,7 +25,7 @@ export const CONFIG = {
   // Horaires, du lundi au dimanche (7 lignes). Exemples :
   //   '11:00-23:00'   ·   '11:30-15:00, 18:30-23:00'   ·   'fermé'
   // Laisser le tableau vide tant que les horaires ne sont pas connus.
-  horaires: ['11:00-22:30', '11:00-22:30', '11:00-22:30', '11:00-22:30', '11:00-22:30', '11:00-22:30', '11:00-22:30'],
+  horaires: ['11:00-22:00', '11:00-22:00', '11:00-22:00', '11:00-22:00', '11:00-22:00', '11:00-22:00', '11:00-22:00'],
 
   // Liens facultatifs (laisser vide pour masquer le bouton).
   // Lien direct pour laisser un avis sur la fiche Google du restaurant.
