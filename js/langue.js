@@ -125,6 +125,11 @@ const EN = {
   'Sur place ou à emporter': 'Eat in or takeaway',
   'Mangez sur place ou emportez votre commande.': 'Eat in or take your order away.',
   'Pas de livraison pour le moment.': 'No delivery for now.',
+  // ── bulle d'accueil
+  'Dernières infos': 'Latest news', 'Bienvenue !': 'Welcome!',
+  'Nous sommes ouverts !': 'We are open!',
+  'Kaboul Paris Nord est ouvert depuis le 1er novembre 2026. Bienvenue ! Venez découvrir notre cuisine afghane, sur place ou à emporter.':
+    'Kaboul Paris Nord has been open since 1 November 2026. Welcome! Come and discover our Afghan cuisine, to eat in or take away.',
   // ── pied de page
   'Cuisine afghane · saveurs parisiennes · halal': 'Afghan cuisine · Parisian flavours · halal',
   'Le logo, les textes, les photos et le contenu de ce site ne peuvent pas être copiés ni réutilisés sans autorisation écrite.':
@@ -146,6 +151,8 @@ const REGLES = [
 ];
 const COUPE = / \+.*$| \(.*$| \/.*$/;
 
+export const enAnglais = texte => EN[texte] ?? texte;
+
 export function traduire(texte) {
   if (LANGUE !== 'en') return texte;
   if (texte in EN) return EN[texte];
@@ -157,7 +164,7 @@ export function traduire(texte) {
 
 // ── application à la page
 const ATTRIBUTS = ['placeholder', 'aria-label', 'title'];
-const ignore = n => n.parentElement?.closest('.un-avis, script, style, [lang="fa"], [lang="ar"]');   // avis des clients : jamais traduits
+const ignore = n => n.parentElement?.closest('.un-avis, script, style, [lang="fa"], [lang="ar"], [data-fixe]');   // avis des clients : jamais traduits
 
 function passerTexte(n) {
   const brut = n.nodeValue, net = brut.trim();

@@ -6,6 +6,15 @@
 export const CONFIG = {
   nom: 'Kaboul Paris Nord',
 
+  // Dernière info, affichée dans la bulle d'accueil.
+  // Changer « id » à chaque nouvelle info : la bulle se réaffiche alors une fois pour tous les visiteurs.
+  // Mettre « actualite: null » pour ne rien annoncer. Penser à la traduction anglaise dans js/langue.js.
+  actualite: {
+    id: '2026-11-ouverture',
+    titre: 'Nous sommes ouverts !',
+    texte: 'Kaboul Paris Nord est ouvert depuis le 1er novembre 2026. Bienvenue ! Venez découvrir notre cuisine afghane, sur place ou à emporter.',
+  },
+
   // Société qui exploite le restaurant (mentions légales).
   societe: {
     nom: 'SAS Amin Jan',

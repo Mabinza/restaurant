@@ -1,5 +1,5 @@
-import { CONFIG, MENU, DEFILE, VEDETTES, BONS_PLANS } from './data.js?v=202611111823';
-import { LANGUE, CHOISIE, GLOSES, traduire, choisirLangue, installerLangue, pret } from './langue.js?v=202611111823';
+import { CONFIG, MENU, DEFILE, VEDETTES, BONS_PLANS } from './data.js?v=202611111909';
+import { LANGUE, CHOISIE, GLOSES, traduire, enAnglais, choisirLangue, installerLangue, pret } from './langue.js?v=202611111909';
 
 // ───────── utilitaires ─────────
 const $ = (s, r = document) => r.querySelector(s);
@@ -421,11 +421,40 @@ function etatOuverture() {
 {
   const autre = LANGUE === 'en' ? 'fr' : 'en';
   $$('.change-langue').forEach(b => { b.textContent = autre.toUpperCase(); b.setAttribute('aria-label', autre === 'en' ? 'English version' : 'Version française'); b.onclick = () => choisirLangue(autre); });
-  // Première visite : on souhaite la bienvenue et on laisse choisir la langue.
-  const bulle = $('#bienvenue');
-  $$('button[data-langue]', bulle).forEach(b => b.onclick = () => { if (!choisirLangue(b.dataset.langue)) bulle.close(); });
-  bulle.addEventListener('close', () => { if (!CHOISIE) try { localStorage.getItem('kpn-langue') || localStorage.setItem('kpn-langue', LANGUE); } catch (e) {} });
-  if (!CHOISIE) bulle.showModal();
+  // Bulle d'accueil : la dernière info du restaurant et, à la première visite, le choix de la langue.
+  // Elle s'affiche à la première visite, puis de nouveau une fois à chaque nouvelle info.
+  const bulle = $('#bienvenue'), info = CONFIG.actualite, CLE_INFO = 'kpn-info';
+  const lu = cle => { try { return localStorage.getItem(cle); } catch (e) { return null; } };
+  const premiere = !CHOISIE, nouvelle = Boolean(info) && lu(CLE_INFO) !== info.id;
+  if (premiere || nouvelle) {
+    const titre = info ? info.titre : 'Bienvenue !', texte = info ? info.texte : '';
+    bulle.innerHTML = premiere ? `
+      <img src="assets/img/tour.svg" alt="" width="54" height="84">
+      <div data-fixe>
+        ${info ? '<p class="sur">Dernières infos · Latest news</p>' : ''}
+        <h3 id="bienvenue-titre">${esc(titre)}</h3>
+        ${texte ? `<p class="desc">${esc(texte)}</p>` : ''}
+        <h3 class="en" lang="en">${esc(enAnglais(titre))}</h3>
+        ${texte ? `<p class="desc" lang="en">${esc(enAnglais(texte))}</p>` : ''}
+        <p class="choix">Choisissez votre langue · Choose your language</p>
+      </div>
+      <div class="langues">
+        <button class="btn btn-or" type="button" data-langue="fr">Français</button>
+        <button class="btn btn-or" type="button" data-langue="en">English</button>
+      </div>` : `
+      <button class="fermer" aria-label="Fermer">✕</button>
+      <img src="assets/img/tour.svg" alt="" width="54" height="84">
+      <p class="sur">Dernières infos</p>
+      <h3 id="bienvenue-titre">${esc(titre)}</h3>
+      <p class="desc">${esc(texte)}</p>
+      <a class="btn btn-or" href="#carte" id="bulle-carte">Voir la carte</a>`;
+    $$('button[data-langue]', bulle).forEach(b => b.onclick = () => { noter(); if (!choisirLangue(b.dataset.langue)) bulle.close(); });
+    $('.fermer', bulle)?.addEventListener('click', () => bulle.close());
+    $('#bulle-carte', bulle)?.addEventListener('click', () => bulle.close());
+    const noter = () => { try { if (info) localStorage.setItem(CLE_INFO, info.id); localStorage.getItem('kpn-langue') || localStorage.setItem('kpn-langue', LANGUE); } catch (e) {} };
+    bulle.addEventListener('close', noter);
+    bulle.showModal();
+  }
 }
 
 // ───────── apparition au défilement ─────────

@@ -36,6 +36,7 @@ Presque tout se règle dans **`js/data.js`** :
 | Quoi | Où |
 | --- | --- |
 | Adresse, téléphone, WhatsApp, horaires, liens (Google, Instagram…) | `CONFIG` |
+| Dernière info affichée dans la bulle d'accueil | `CONFIG.actualite` |
 | Plats, prix, catégories | `MENU` |
 | Plats qui défilent en haut de page | `DEFILE` |
 | Textes des incontournables | `VEDETTES` |

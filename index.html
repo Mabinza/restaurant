@@ -30,7 +30,7 @@ try { var l = new URLSearchParams(location.search).get('lang') || localStorage.g
 <link rel="preload" as="font" type="font/woff2" href="assets/polices/jost.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="assets/polices/cinzel.woff2" crossorigin>
 <link rel="preload" as="image" href="assets/img/plats/kabuli-palaw.webp">
-<link rel="stylesheet" href="css/style.css?v=202611111823">
+<link rel="stylesheet" href="css/style.css?v=202611111909">
 </head>
 <body>
 <a class="evitement" href="#carte">Aller à la carte</a>
@@ -197,21 +197,13 @@ try { var l = new URLSearchParams(location.search).get('lang') || localStorage.g
   <button type="button" class="ouvre-selection"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8h12l-1 12H7L6 8Z"/><path d="M9 8V7a3 3 0 0 1 6 0v1"/></svg>Sélection<b class="compte" hidden>0</b></button>
 </nav>
 
-<dialog id="bienvenue" class="fiche bienvenue" aria-labelledby="bienvenue-titre">
-  <img src="assets/img/tour.svg" alt="" width="64" height="100">
-  <h3 id="bienvenue-titre">Bienvenue <span>·</span> Welcome</h3>
-  <p class="desc">Choisissez votre langue<br>Choose your language</p>
-  <div class="langues">
-    <button class="btn btn-or" type="button" data-langue="fr">Français</button>
-    <button class="btn btn-or" type="button" data-langue="en">English</button>
-  </div>
-</dialog>
+<dialog id="bienvenue" class="fiche bienvenue" aria-labelledby="bienvenue-titre"></dialog>
 <dialog id="fiche" class="fiche"></dialog>
 <dialog id="mentions" class="mentions" aria-label="Mentions légales"></dialog>
 <dialog id="selection" class="tiroir" aria-labelledby="selection-titre"></dialog>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <noscript><p class="sans-js">Activez JavaScript pour afficher la carte du restaurant.</p></noscript>
-<script type="module" src="js/app.js?v=202611111823"></script>
+<script type="module" src="js/app.js?v=202611111909"></script>
 </body>
 </html>

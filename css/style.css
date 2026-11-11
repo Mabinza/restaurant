@@ -379,8 +379,10 @@ footer button.lien-discret { font-size: .8rem; letter-spacing: .1em; text-transf
 
 .bienvenue { display: grid; justify-items: center; }
 .bienvenue:not([open]) { display: none; }
-.bienvenue h3 { margin-top: 14px; font-size: 1.5rem; }
-.bienvenue h3 span { color: var(--or); }
+.bienvenue > img { margin-bottom: 12px; }
+.bienvenue h3.en { margin-top: 16px; padding-top: 16px; border-top: 1px dashed var(--trait); }
+.bienvenue .choix { margin-top: 18px; font-size: .78rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--or); }
+.bienvenue .langues { margin-top: 12px; }
 .langues { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; margin-top: 6px; }
 .pied-liens { display: flex; align-items: center; gap: 14px; }
 
