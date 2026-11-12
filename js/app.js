@@ -1,5 +1,5 @@
-import { CONFIG, MENU, DEFILE, VEDETTES, BONS_PLANS } from './data.js?v=202611111909';
-import { LANGUE, CHOISIE, GLOSES, traduire, enAnglais, choisirLangue, installerLangue, pret } from './langue.js?v=202611111909';
+import { CONFIG, MENU, DEFILE, VEDETTES, BONS_PLANS } from './data.js?v=202611121432';
+import { LANGUE, CHOISIE, GLOSES, traduire, enAnglais, choisirLangue, installerLangue, pret } from './langue.js?v=202611121432';
 
 // ───────── utilitaires ─────────
 const $ = (s, r = document) => r.querySelector(s);

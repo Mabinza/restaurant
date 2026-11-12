@@ -42,7 +42,7 @@ export const CONFIG = {
 
   // Liens facultatifs (laisser vide pour masquer le bouton).
   // Lien direct pour laisser un avis sur la fiche Google du restaurant.
-  googleAvis: 'https://g.page/r/CWn5BgDWQ9XsECE/review',
+  googleAvis: 'https://g.page/r/CbNkVob7T6EcEBM/review',
   instagram: '',
   tiktok: '',
   uberEats: '',
