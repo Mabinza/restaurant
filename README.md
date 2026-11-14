@@ -61,10 +61,9 @@ choisir la langue ; le bouton FR / EN en haut de page permet d'en changer ensuit
 
 ## Affichette QR code
 
-`impression/affichette-qr.pdf` : page 1, une affiche A4 pour la vitrine (QR code vers la carte) ;
-page 2, deux cartes de table à découper, chacune avec deux QR codes : la carte et la page d'avis Google.
-Les QR codes pointent vers l'adresse du site et vers le lien d'avis Google : si l'un des deux change,
-il faut les régénérer et réimprimer.
+`impression/affichette-qr.pdf` : page 1, une affiche A4 pour la vitrine ; page 2, quatre cartes de
+table à découper. Le QR code (avec l'emblème au centre) pointe vers l'adresse du site : si elle change,
+il faut le régénérer et réimprimer.
 
 ## État actuel — à savoir
 
